@@ -10,6 +10,21 @@ struct Vector
 	std::vector<double> Data;
 	//向量維度
 	int dimension;
+	//Constructors
+	Vector::Vector();
+	Vector::Vector(double d);
+	Vector::Vector(int i);
+	//OperatorOverLoading
+	const Vector& operator+(const Vector& v);
+	const Vector& operator-(const Vector& v);
+	// Multiplication of Vector
+	const Vector& operator*(const Vector& v);
+	// Dot of Vector
+	friend const double operator*(const Vector& v, const Vector& v2);
+	// Norm of Vector
+	const double norm();
+	// Normalization of Vector
+	const Vector& normalization();
 };
 
 struct Matrix
@@ -19,6 +34,10 @@ struct Matrix
 	//矩陣維度
 	int row;
 	int column;
+	// Constructors
+	Matrix();
+	Matrix(double d);
+	Matrix(int i);
 };
 
 //定義控管資料class
