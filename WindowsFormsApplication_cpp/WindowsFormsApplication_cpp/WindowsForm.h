@@ -333,35 +333,77 @@ private: System::Void openFileDialog1_FileOk(System::Object^  sender, System::Co
 	//將檔案路徑名稱傳入dataManager
 	dataManager->SetFileName(tempFileName);
 	//從讀取讀取向量資料
-	if (dataManager->LoadVectorData())
+	if (dataManager->ReadFileName())
 	{
-		//將VectorList中項目先做清除
-		VectorList->Items->Clear();	
-		//取得所有向量資料
-		std::vector<Vector> vectors = dataManager->GetVectors();
-
-		for (unsigned int i = 0; i < vectors.size(); i++)
+		if (!dataManager->VM)
 		{
-			//將檔案名稱存入暫存
-			std::string tempString = vectors[i].Name;
-			//將輸出格式存入暫存
-			tempString += " [";
-			//將輸出資料存入暫存
-			for (unsigned int j = 0; j<vectors[i].Data.size(); j++)
+			//將VectorList中項目先做清除
+			VectorList->Items->Clear();
+			//取得所有向量資料
+			std::vector<Vector> vectors = dataManager->GetVectors();
+
+			for (unsigned int i = 0; i < vectors.size(); i++)
 			{
-				std::string scalarString = std::to_string(vectors[i].Data[j]);
-				tempString += scalarString.substr(0, scalarString.size() - 5);
-				if (j != vectors[i].Data.size() - 1)
-					tempString += ",";
+				//將檔案名稱存入暫存
+				std::string tempString = vectors[i].Name;
+				//將輸出格式存入暫存
+				tempString += " [";
+				//將輸出資料存入暫存
+				for (unsigned int j = 0; j < vectors[i].Data.size(); j++)
+				{
+					std::string scalarString = std::to_string(vectors[i].Data[j]);
+					tempString += scalarString.substr(0, scalarString.size() - 5);
+					if (j != vectors[i].Data.size() - 1)
+						tempString += ",";
+				}
+				//將輸出格式存入暫存
+				tempString += "]";
+				//將項目加入VectorList中
+				VectorList->Items->Add(gcnew String(tempString.c_str()));
 			}
-			//將輸出格式存入暫存
-			tempString += "]";
-			//將項目加入VectorList中
-			VectorList->Items->Add(gcnew String(tempString.c_str()));
+			Output->Text += "-Vector datas have been loaded-" + Environment::NewLine;
 		}
-		Output->Text += "-Vector datas have been loaded-" + Environment::NewLine;
-		/*String^ test = gcnew String(tempFileName.c_str());
-		Output->Text = test + Environment::NewLine;*/
+		else
+		{
+			//將VectorList中項目先做清除
+			VectorList->Items->Clear();
+			//取得所有矩陣資料
+			std::vector<Matrix> matrixs = dataManager->GetMatrixs();
+
+			for (unsigned int i = 0; i < matrixs.size(); i++)
+			{
+				//將檔案名稱存入暫存
+				std::string tempString = matrixs[i].Name;
+				//將輸出格式存入暫存
+				tempString += "[";
+				VectorList->Items->Add(gcnew String(tempString.c_str()) + Environment::NewLine);
+				tempString.clear();
+				//將輸出資料存入暫存
+				//Rows
+				for (unsigned int j = 0; j < matrixs[i].Data.size(); j++)
+				{
+					//Columns
+					for (unsigned int k = 0; k < matrixs[i].Data[j].size(); k++)
+					{
+						std::string scalarString = std::to_string(matrixs[i].Data[j][k]);
+						tempString += scalarString.substr(0, scalarString.size() - 5);
+						if (k != matrixs[i].Data[j].size() - 1)
+							tempString += ",";
+					}
+					VectorList->Items->Add(gcnew String(tempString.c_str()) + Environment::NewLine);
+					tempString.clear();
+				}
+				//將輸出格式存入暫存
+				tempString += "]";
+				//將項目加入VectorList中
+				VectorList->Items->Add(gcnew String(tempString.c_str()));
+			}
+			Output->Text += "-Matrix datas have been loaded-" + Environment::NewLine;
+		}
+	}
+	else
+	{
+		Output->Text += "File Not Found！！！" + Environment::NewLine;
 	}
 }
 };

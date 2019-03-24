@@ -8,12 +8,17 @@ struct Vector
 {
 	std::string Name;
 	std::vector<double> Data;
+	//向量維度
+	int dimension;
 };
 
 struct Matrix
 {
 	std::string Name;
 	std::vector<std::vector<double>>Data;
+	//矩陣維度
+	int row;
+	int column;
 };
 
 //定義控管資料class
@@ -25,13 +30,14 @@ private:
 	std::vector<Matrix> Matrixs;
 	//紀錄向量ID，用於控管
 	int  VectorVariableIndex;
-	int MatrixVaribaleIndex;
+	int MatrixVariableIndex;
 	//紀錄檔案路徑名稱
 	std::string FileName;
 public:
 	DataManager();
-	//讀取向量資料
+	//讀取檔案名稱(若是'V'則向量, 'M'則矩陣)
 	bool ReadFileName();
+	//讀取向量資料
 	bool LoadVectorData();
 	//讀取矩陣資料
 	bool LoadMatrixData();
@@ -41,4 +47,6 @@ public:
 	std::vector<Matrix> GetMatrixs();
 	//設置檔案路徑名稱
 	void SetFileName(std::string fileName);
+	//Vector or Matrix
+	int VM;
 };
