@@ -1,1 +1,4 @@
-﻿  WindowsFormsApplication_cpp.vcxproj -> C:\Users\HP\OneDrive\NTUST Course\工程數學\example\Project1\project1\Vector example\WindowsFormsApplication_cpp\Debug\WindowsFormsApplication_cpp.exe
+﻿  InfixToPostfix.cpp
+  DataManager.obj : 受控碼存在時不支援 /DEBUG:FASTLINK; 正在以 /DEBUG:FULL 重新啟動連結
+  DataManager.obj : 發現 MSIL 模組。MSIL 的累加連結已停用。正在執行完整連結
+  WindowsFormsApplication_cpp.vcxproj -> C:\Users\HP\OneDrive\NTUST Course\工程數學\Project1\Project1\WindowsFormsApplication_cpp\Debug\WindowsFormsApplication_cpp.exe
