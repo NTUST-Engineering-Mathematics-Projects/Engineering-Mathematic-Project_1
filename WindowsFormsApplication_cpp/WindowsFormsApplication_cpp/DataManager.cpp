@@ -246,16 +246,17 @@ const Vector& Vector::operator-(const Vector& v)
 	return *this;
 }
 // Multiplication of Vector
-const Vector& Vector::operator*(const Vector& v)
+// Vector friend function
+const Vector& operator*(const Vector& v, const Vector& v2)
 {
 	Vector scal;
 	double value;
-	if (v.Data.size() < this->Data.size())
+	if (v.Data.size() < v2.Data.size())
 	{
-		for (unsigned int i = 0; i < this->Data.size(); i++)
+		for (unsigned int i = 0; i < v2.Data.size(); i++)
 		{
 			value = 0.0;
-			value = this->Data[i] * v.Data[0];
+			value = v2.Data[i] * v.Data[0];
 			scal.Data.push_back(value);
 		}
 	}
@@ -264,20 +265,19 @@ const Vector& Vector::operator*(const Vector& v)
 		for (unsigned int i = 0; i < v.Data.size(); i++)
 		{
 			value = 0.0;
-			value = v.Data[i] * this->Data[0];
+			value = v.Data[i] * v2.Data[0];
 			scal.Data.push_back(value);
 		}
 	}
 	return scal;
 }
-// Vector friend function
 // Dot of Vector
-const double operator*(const Vector & v, const Vector & v2)
+const double Vector::operator*(const Vector & v)
 {
 	double dot;
 	for (unsigned int i = 0; i < v.Data.size(); i++)
 	{
-		dot += (v.Data[i] * v2.Data[i]);
+		dot += (v.Data[i] * this->Data[i]);
 	}
 	return dot;
 }
@@ -299,6 +299,11 @@ const Vector & Vector::normalization()
 	for (unsigned int i = 0; i < this->Data.size(); i++)
 		this->Data[i] /= N;
 	return *this;
+}
+// Orthogonal judgement
+const bool Vector::Orthogonal(const Vector & v)
+{	
+	return ((*this * v) == 0.0) ? true : false;
 }
 
 // Matrix Constructors operation

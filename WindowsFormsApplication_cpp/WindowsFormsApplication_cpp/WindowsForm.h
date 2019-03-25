@@ -274,6 +274,8 @@ private: System::Void Input_TextChanged(System::Object^  sender, System::EventAr
 	//當Input textbox中的輸入改變時，便會進入此函式
 	//取得向量資料
 	std::vector<Vector> vectors = dataManager->GetVectors();
+	//取得矩陣資料
+	std::vector<Matrix> matrixs = dataManager->GetMatrixs();
 	//判斷輸入自元為'\n'，並防止取到字串-1位置
 	if (Input->Text->Length-1 >= 0 &&Input->Text[Input->Text->Length - 1] == '\n')
 	{
@@ -284,28 +286,80 @@ private: System::Void Input_TextChanged(System::Object^  sender, System::EventAr
 		{
 			//定意輸出暫存
 			String^ outputTemp = "";
-			//透過for迴圈，從向量資料中找出對應變數
-			for (unsigned int i = 0; i < vectors.size();i++)
+			std::string temp;
+			MarshalString(userCommand[1], temp);
+			int Printflag = 0; //找不到的向量或矩陣(0 為沒有此向量或矩陣)
+			if (temp[0] == '$' && temp[1] == 'v')
 			{
-				//若變數名稱與指令變數名稱符合
-				if (userCommand[1] == gcnew String(vectors[i].Name.c_str()))
+				//透過for迴圈，從向量資料中找出對應變數
+				for (unsigned int i = 0; i < vectors.size(); i++)
 				{
-					//將輸出格式存入暫存
-					outputTemp += "[";
-					//將輸出資料存入暫存
-					for (unsigned int j = 0; j<vectors[i].Data.size(); j++)
+					//若變數名稱與指令變數名稱符合
+					if (userCommand[1] == gcnew String(vectors[i].Name.c_str()))
 					{
-						outputTemp += vectors[i].Data[j].ToString();
-						if (j != vectors[i].Data.size() - 1)
-							outputTemp += ",";
+						Printflag = 1;
+						//將輸出格式存入暫存
+						outputTemp += "[";
+						//將輸出資料存入暫存
+						for (unsigned int j = 0; j < vectors[i].Data.size(); j++)
+						{
+							outputTemp += vectors[i].Data[j].ToString();
+							if (j != vectors[i].Data.size() - 1)
+								outputTemp += ",";
+						}
+						//將輸出格式存入暫存，並且換行
+						outputTemp += "]" + Environment::NewLine;
+						//輸出暫存資訊
+						Output->Text += gcnew String(vectors[i].Name.c_str()) + " = " + outputTemp;
+						break;
 					}
-					//將輸出格式存入暫存，並且換行
-					outputTemp += "]" + Environment::NewLine;
-					//輸出暫存資訊
-					Output->Text += gcnew String(vectors[i].Name.c_str()) +" = "+ outputTemp;
-					break;
+				}
+				// 錯誤偵測
+				if (!Printflag)
+				{
+					Output->Text += "There is no such vector！" + Environment::NewLine;
 				}
 			}
+			else if(temp[0] == '$' && temp[1] == 'm')
+			{
+				// Print Matrix
+				for (unsigned int i = 0; i < matrixs.size(); i++)
+				{
+					if (userCommand[1] == gcnew String(matrixs[i].Name.c_str()))
+					{
+						Printflag = 1;
+						outputTemp += "[" + Environment::NewLine;
+						for (unsigned int j = 0; j < matrixs[i].Data.size(); j++)
+						{
+							for (unsigned int k = 0; k < matrixs[i].Data[j].size(); k++)
+							{
+								outputTemp += matrixs[i].Data[j][k].ToString();
+								if (k != matrixs[i].Data[j].size() - 1)
+									outputTemp += ",";
+							}
+							outputTemp += Environment::NewLine;
+						}
+						outputTemp += "]" + Environment::NewLine;
+						Output->Text += gcnew String(matrixs[i].Name.c_str()) + " = " + outputTemp;
+						break;
+					}
+				}
+				// 錯誤偵測
+				if (!Printflag)
+				{
+					Output->Text += "There is no such Matrix！" + Environment::NewLine;
+				}
+			}
+			// 錯誤偵測
+			else
+			{
+				Output->Text += "-Command not found-" + Environment::NewLine;
+			}
+		}
+		//進行計算
+		else if (userCommand[0] == "cal")
+		{
+
 		}
 		//反之則判斷找不到指令
 		else

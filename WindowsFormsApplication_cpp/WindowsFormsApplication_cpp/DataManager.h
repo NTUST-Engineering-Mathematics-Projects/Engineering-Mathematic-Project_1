@@ -18,13 +18,15 @@ struct Vector
 	const Vector& operator+(const Vector& v);
 	const Vector& operator-(const Vector& v);
 	// Multiplication of Vector
-	const Vector& operator*(const Vector& v);
+	friend const Vector& operator*(const Vector& v, const Vector& v2);
 	// Dot of Vector
-	friend const double operator*(const Vector& v, const Vector& v2);
+	const double operator*(const Vector& v);
 	// Norm of Vector
 	const double norm();
 	// Normalization of Vector
 	const Vector& normalization();
+	// Orthogonal judgement
+	const bool Orthogonal(const Vector& v);
 };
 
 struct Matrix
