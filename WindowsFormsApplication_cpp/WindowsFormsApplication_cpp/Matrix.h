@@ -13,4 +13,8 @@ struct Matrix
 	Matrix();
 	Matrix(double d);
 	Matrix(int i);
+	Matrix(std::string, std::vector<std::vector<double>>);
+	const Matrix& operator+(const Matrix& m);
+	const Matrix& operator-(const Matrix& m);
+	const Matrix& operator*(const Matrix& m);
 };
