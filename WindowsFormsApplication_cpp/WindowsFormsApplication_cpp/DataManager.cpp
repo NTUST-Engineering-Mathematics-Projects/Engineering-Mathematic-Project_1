@@ -228,6 +228,11 @@ Vector::Vector(int i)
 {
 	Data.push_back((double)i);
 }
+Vector::Vector(std::string name, std::vector<double> data)
+{
+	Name = name;
+	Data = data;
+}
 // Vector OperatorOverLoading
 const Vector & Vector::operator+(const Vector & v)
 {
@@ -246,30 +251,25 @@ const Vector& Vector::operator-(const Vector& v)
 	return *this;
 }
 // Multiplication of Vector
-// Vector friend function
-const Vector& operator*(const Vector& v, const Vector& v2)
+const Vector& Vector::Scalar(const Vector& v, const Vector& v2)
 {
-	Vector scal;
-	double value;
+	std::string Scal = "Scalar";
+	std::vector<double>value;
 	if (v.Data.size() < v2.Data.size())
 	{
 		for (unsigned int i = 0; i < v2.Data.size(); i++)
 		{
-			value = 0.0;
-			value = v2.Data[i] * v.Data[0];
-			scal.Data.push_back(value);
+			value.push_back(v2.Data[i] * v.Data[0]);
 		}
 	}
 	else
 	{
 		for (unsigned int i = 0; i < v.Data.size(); i++)
 		{
-			value = 0.0;
-			value = v.Data[i] * v2.Data[0];
-			scal.Data.push_back(value);
+			value.push_back(v.Data[i] * v2.Data[0]);
 		}
 	}
-	return scal;
+	return Vector(Scal, value);
 }
 // Dot of Vector
 const double Vector::operator*(const Vector & v)

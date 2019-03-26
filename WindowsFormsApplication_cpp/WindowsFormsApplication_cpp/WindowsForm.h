@@ -359,7 +359,7 @@ private: System::Void Input_TextChanged(System::Object^  sender, System::EventAr
 		//進行計算
 		else if (userCommand[0] == "cal")
 		{
-
+			// 格式：dot ( $v1 $v2 )
 		}
 		//反之則判斷找不到指令
 		else
