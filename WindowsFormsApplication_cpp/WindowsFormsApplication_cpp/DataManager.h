@@ -1,47 +1,8 @@
 #pragma once
-#include<vector>
 #include<iostream>
 #include<fstream>
-#include<string>
-//定義向量資料結構
-struct Vector
-{
-	std::string Name;
-	std::vector<double> Data;
-	//向量維度
-	int dimension;
-	//Constructors
-	Vector::Vector();
-	Vector::Vector(double d);
-	Vector::Vector(int i);
-	Vector::Vector(std::string , std::vector<double>);
-	//OperatorOverLoading
-	const Vector& operator+(const Vector& v);
-	const Vector& operator-(const Vector& v);
-	// Multiplication of Vector
-	const Vector& Scalar(const Vector& v, const Vector& v2);
-	// Dot of Vector
-	const double operator*(const Vector& v);
-	// Norm of Vector
-	const double norm();
-	// Normalization of Vector
-	const Vector& normalization();
-	// Orthogonal judgement
-	const bool Orthogonal(const Vector& v);
-};
-
-struct Matrix
-{
-	std::string Name;
-	std::vector<std::vector<double>>Data;
-	//矩陣維度
-	int row;
-	int column;
-	// Constructors
-	Matrix();
-	Matrix(double d);
-	Matrix(int i);
-};
+#include "Vector.h"
+#include "Matrix.h"
 
 //定義控管資料class
 class DataManager
