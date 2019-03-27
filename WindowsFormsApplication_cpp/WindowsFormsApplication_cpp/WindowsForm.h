@@ -360,6 +360,14 @@ private: System::Void Input_TextChanged(System::Object^  sender, System::EventAr
 		else if (userCommand[0] == "cal")
 		{
 			// 格式：dot ( $v1 $v2 )
+			std::vector<std::string>userinput;
+			for (unsigned int i = 0; i < userCommand->Length; i++)
+			{
+				std::string temp;
+				MarshalString(userCommand[i], temp);
+				userinput.push_back(temp);
+			}
+
 		}
 		//反之則判斷找不到指令
 		else

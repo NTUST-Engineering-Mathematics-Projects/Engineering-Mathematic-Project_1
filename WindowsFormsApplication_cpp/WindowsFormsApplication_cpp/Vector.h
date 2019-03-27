@@ -18,7 +18,7 @@ struct Vector
 	const Vector& operator+(const Vector& v);
 	const Vector& operator-(const Vector& v);
 	// Multiplication of Vector
-	const Vector& Scalar(const Vector& v, const Vector& v2);
+	const Vector& Scalar(const Vector& v);
 	// Dot of Vector
 	const double operator*(const Vector& v);
 	// Norm of Vector

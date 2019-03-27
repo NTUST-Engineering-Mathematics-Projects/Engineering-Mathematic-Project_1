@@ -1,5 +1,6 @@
 #pragma once
 #include "DataManager.h"
 #include<cmath>
+using namespace System;
 
-std::vector<std::string> InfToPos();
+void InfToPos(std::vector<std::string>&);

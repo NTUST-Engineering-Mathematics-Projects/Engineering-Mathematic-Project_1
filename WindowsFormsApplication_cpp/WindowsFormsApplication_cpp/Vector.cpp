@@ -34,22 +34,22 @@ const Vector& Vector::operator-(const Vector& v)
 	return *this;
 }
 // Multiplication of Vector
-const Vector& Vector::Scalar(const Vector& v, const Vector& v2)
+const Vector& Vector::Scalar(const Vector& v)
 {
 	std::string Scal = "Scalar";
 	std::vector<double>value;
-	if (v.Data.size() < v2.Data.size())
+	if (v.Data.size() < this->Data.size())
 	{
-		for (unsigned int i = 0; i < v2.Data.size(); i++)
+		for (unsigned int i = 0; i < this->Data.size(); i++)
 		{
-			value.push_back(v2.Data[i] * v.Data[0]);
+			value.push_back(this->Data[i] * v.Data[0]);
 		}
 	}
 	else
 	{
 		for (unsigned int i = 0; i < v.Data.size(); i++)
 		{
-			value.push_back(v.Data[i] * v2.Data[0]);
+			value.push_back(v.Data[i] * this->Data[0]);
 		}
 	}
 	return Vector(Scal, value);
