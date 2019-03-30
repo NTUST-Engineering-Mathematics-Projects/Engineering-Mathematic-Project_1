@@ -85,3 +85,66 @@ const Matrix & Matrix::Trans()
 	}
 	return trans;
 }
+const int Matrix::Rank()
+{
+	int result = 0;
+	Matrix RankTemp = *this;
+	for (int cur_row = 0, cur_col = 0; cur_row < RankTemp.row, cur_col < RankTemp.column; cur_row++, cur_col++)
+	{
+		// Find currentMax
+		double CMax = abs(RankTemp.Data[cur_row][cur_col]);
+		int MRow = cur_row;
+		for (int i = MRow + 1; i < RankTemp.Data.size(); i++)
+		{
+			if (abs(RankTemp.Data[i][cur_col]) > CMax)
+			{
+				CMax = abs(RankTemp.Data[i][cur_col]);
+				MRow = i;
+			}
+		}
+		if (MRow != cur_row)
+		{
+			// Exchange Row
+			std::vector<double>ExTemp = RankTemp.Data[MRow];
+			RankTemp.Data[MRow] = RankTemp.Data[cur_row];
+			RankTemp.Data[cur_row] = ExTemp;
+			cur_row--;
+			cur_col--;
+			continue;
+		}
+		// Clear all nonzero columns
+		for (int i = cur_row + 1; i < RankTemp.row; i++)
+		{
+			if (RankTemp.Data[i][cur_col] == 0)
+			{
+				continue;
+			}
+			double Mult = (RankTemp.Data[i][cur_col] / RankTemp.Data[cur_row][cur_col]);
+			for (int j = cur_col; j < RankTemp.column; j++)
+			{
+				RankTemp.Data[i][j] -= (Mult * RankTemp.Data[cur_row][j]);
+				if ((RankTemp.Data[i][j] < 1E-6) && (RankTemp.Data[i][j]) > -1E-6)
+					RankTemp.Data[i][j] = 0;
+			}
+		}
+	}
+	// Calculate rank
+	for (unsigned int i = 0; i < RankTemp.row; i++)
+	{
+		bool Rflag = true;
+		// If all are zero => zero row
+		for (unsigned int j = 0; j < RankTemp.column; j++)
+		{
+			if (RankTemp.Data[i][j] != 0.0)
+			{
+				Rflag = false;
+				break;
+			}
+		}
+		if (Rflag)
+			result++;
+		else
+			continue;
+	}
+	return result;
+}

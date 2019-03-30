@@ -1,5 +1,6 @@
 #pragma once
 #include <vector>
+#include <cmath>
 #include<string>
 
 struct Matrix
@@ -18,4 +19,5 @@ struct Matrix
 	const Matrix& operator-(const Matrix& m);
 	const Matrix& operator*(const Matrix& m);
 	const Matrix& Trans();
+	const int Rank();
 };

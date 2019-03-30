@@ -359,15 +359,31 @@ private: System::Void Input_TextChanged(System::Object^  sender, System::EventAr
 		//進行計算
 		else if (userCommand[0] == "cal")
 		{
-			// 格式：dot ( $v1 $v2 )
+			// 格式：A dot B => $v1 * $v2 (dot跟scalar都可以用*)
 			std::vector<std::string>userinput;
-			for (unsigned int i = 0; i < userCommand->Length; i++)
+			for (unsigned int i = 1; i < userCommand->Length; i++)
 			{
 				std::string temp;
 				MarshalString(userCommand[i], temp);
 				userinput.push_back(temp);
 			}
-
+			InfToPos(userinput);
+			/*for (unsigned int i = 0; i < userinput.size(); i++)
+			{
+				Output->Text += gcnew String(userinput[i].c_str());
+			}
+			Output->Text += Environment::NewLine;*/
+		}
+		else if (userCommand[0] == "rank")
+		{
+			for (unsigned int i = 0; i < matrixs.size(); i++)
+			{
+				if (userCommand[1] == gcnew String(matrixs[i].Name.c_str()))
+				{
+					Output->Text += "Rank of " + userCommand[1] + " = " + matrixs[i].Rank();
+					break;
+				}
+			}
 		}
 		//反之則判斷找不到指令
 		else
