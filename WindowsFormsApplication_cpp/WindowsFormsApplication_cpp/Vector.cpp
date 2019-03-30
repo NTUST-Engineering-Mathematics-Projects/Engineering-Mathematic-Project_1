@@ -11,6 +11,10 @@ Vector::Vector(int i)
 {
 	Data.push_back((double)i);
 }
+Vector::Vector(std::string name)
+{
+	Name = name;
+}
 Vector::Vector(std::string name, std::vector<double> data)
 {
 	Name = name;
@@ -33,36 +37,39 @@ const Vector& Vector::operator-(const Vector& v)
 	}
 	return *this;
 }
-// Multiplication of Vector
-const Vector& Vector::Scalar(const Vector& v)
+// Dot of Vector
+const Vector& Vector::operator*(const Vector & v)
 {
-	std::string Scal = "Scalar";
-	std::vector<double>value;
-	if (v.Data.size() < this->Data.size())
-	{
-		for (unsigned int i = 0; i < this->Data.size(); i++)
-		{
-			value.push_back(this->Data[i] * v.Data[0]);
-		}
-	}
-	else
+	Vector Result;
+	// Multiplication of Vector(Scalar)
+	// If size == 1, is scalar.
+	if (this->Data.size() == 1)
 	{
 		for (unsigned int i = 0; i < v.Data.size(); i++)
 		{
-			value.push_back(v.Data[i] * this->Data[0]);
+			double temp = v.Data[i] * this->Data[0];
+			Result.Data.push_back(temp);
 		}
 	}
-	return Vector(Scal, value);
-}
-// Dot of Vector
-const double Vector::operator*(const Vector & v)
-{
-	double dot;
-	for (unsigned int i = 0; i < v.Data.size(); i++)
+	else if (v.Data.size() == 1)
 	{
-		dot += (v.Data[i] * this->Data[i]);
+		for (unsigned int i = 0; i < this->Data.size(); i++)
+		{
+			double temp = this->Data[i] * v.Data[0];
+			Result.Data.push_back(temp);
+		}
 	}
-	return dot;
+	// Dot of Vector
+	else
+	{
+		double dot;
+		for (unsigned int i = 0; i < v.Data.size(); i++)
+		{
+			dot += (v.Data[i] * this->Data[i]);
+		}
+		Result.Data.push_back(dot);
+	}
+	return Result;
 }
 // Norm of Vector
 const double Vector::norm()
@@ -86,5 +93,7 @@ const Vector & Vector::normalization()
 // Orthogonal judgement
 const bool Vector::Orthogonal(const Vector & v)
 {
-	return ((*this * v) == 0.0) ? true : false;
+	// Dot of two vectors is 0
+	Vector temp = *this * v;
+	return (temp.Data[0] == 0.0) ? true : false;
 }

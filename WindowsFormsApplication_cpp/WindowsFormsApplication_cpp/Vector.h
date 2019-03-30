@@ -13,14 +13,13 @@ struct Vector
 	Vector::Vector();
 	Vector::Vector(double d);
 	Vector::Vector(int i);
+	Vector::Vector(std::string);
 	Vector::Vector(std::string, std::vector<double>);
 	//OperatorOverLoading
 	const Vector& operator+(const Vector& v);
 	const Vector& operator-(const Vector& v);
-	// Multiplication of Vector
-	const Vector& Scalar(const Vector& v);
-	// Dot of Vector
-	const double operator*(const Vector& v);
+	// Dot of Vector and Multiplication of Vector
+	const Vector& operator*(const Vector& v);
 	// Norm of Vector
 	const double norm();
 	// Normalization of Vector
