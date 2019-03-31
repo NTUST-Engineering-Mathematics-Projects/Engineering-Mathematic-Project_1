@@ -76,6 +76,7 @@ bool DataManager::LoadVectorData()
 				Vector tempVector;
 				//存入向量資料
 				tempVector.Data = tempVectorData;
+				tempVector.dimension = dimension;
 				//定義向量變數名稱，依VectorVariableIndex變數作名稱的控管
 				std::string vectorVariableTemp = "$v" + std::to_string(VectorVariableIndex);
 				//存入向量變數名稱
@@ -131,6 +132,8 @@ bool DataManager::LoadMatrixData()
 	std::string tempSring;
 	//從檔案讀取字串，解析掉矩陣總數
 	fin >> tempSring;
+	// 防止資料最後一行有空白或Enter
+	bool EnterFlag = true;
 
 	//執行讀檔迴圈，並在讀到檔案結尾時結束
 	while (!fin.eof())
@@ -147,6 +150,8 @@ bool DataManager::LoadMatrixData()
 				//存入矩陣資料
 				tempMatrixData.push_back(bufferVector);
 				tempMatrix.Data = tempMatrixData;
+				tempMatrix.row = Row;
+				tempMatrix.column = Column;
 				//定義矩陣變數名稱，依matrixVariableIndex變數作名稱的控管
 				std::string matrixVariableTemp = "$m" + std::to_string(MatrixVariableIndex);
 				//存入矩陣變數名稱
@@ -180,6 +185,12 @@ bool DataManager::LoadMatrixData()
 			if (currentRow == Row)
 			{
 				tempMatrixData.push_back(bufferVector);
+				// 已經讀完最後一筆但有空白或換行
+				if ( tempMatrixData.size() == Row && bufferVector.size() == Column)
+				{
+					EnterFlag = false;
+					break;
+				}
 				bufferVector.clear();
 				bufferVector.push_back(value);
 				currentRow = 1;
@@ -194,7 +205,11 @@ bool DataManager::LoadMatrixData()
 	}
 	//讀入輸入檔案中最後一個矩陣資訊
 	Matrix tempMatrix;
-	tempMatrixData.push_back(bufferVector);
+	// 避開換行判斷
+	if(EnterFlag)
+		tempMatrixData.push_back(bufferVector);
+	tempMatrix.row = Row;
+	tempMatrix.column = Column;
 	tempMatrix.Data = tempMatrixData;
 	std::string matrixVariableTemp = "$m" + std::to_string(MatrixVariableIndex);
 	tempMatrix.Name = matrixVariableTemp;

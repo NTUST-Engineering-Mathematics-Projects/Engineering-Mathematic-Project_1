@@ -380,7 +380,7 @@ private: System::Void Input_TextChanged(System::Object^  sender, System::EventAr
 			{
 				if (userCommand[1] == gcnew String(matrixs[i].Name.c_str()))
 				{
-					Output->Text += "Rank of " + userCommand[1] + " = " + matrixs[i].Rank();
+					Output->Text += "Rank of " + userCommand[1] + " = " + matrixs[i].Rank() + Environment::NewLine;
 					break;
 				}
 			}
