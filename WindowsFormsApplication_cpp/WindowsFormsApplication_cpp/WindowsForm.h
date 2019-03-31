@@ -385,6 +385,17 @@ private: System::Void Input_TextChanged(System::Object^  sender, System::EventAr
 				}
 			}
 		}
+		else if (userCommand[0] == "det")
+		{
+			for (unsigned int i = 0; i < matrixs.size(); i++)
+			{
+				if (userCommand[1] == gcnew String(matrixs[i].Name.c_str()))
+				{
+					Output->Text += "Determinant of " + userCommand[1] + " = " + matrixs[i].Determinant() + Environment::NewLine;
+					break;
+				}
+			}
+		}
 		//反之則判斷找不到指令
 		else
 		{

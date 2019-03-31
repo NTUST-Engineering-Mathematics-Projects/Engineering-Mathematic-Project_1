@@ -1,6 +1,7 @@
 #pragma once
 #include <vector>
 #include<string>
+#include <iostream>
 
 struct Matrix
 {
@@ -14,9 +15,11 @@ struct Matrix
 	Matrix(double d);
 	Matrix(int i);
 	Matrix(std::string, std::vector<std::vector<double>>);
-	const Matrix& operator+(const Matrix& m);
-	const Matrix& operator-(const Matrix& m);
-	const Matrix& operator*(const Matrix& m);
+	const Matrix& operator+(const Matrix&);
+	const Matrix& operator-(const Matrix&);
+	const Matrix& operator*(const Matrix&);
 	const Matrix& Trans();
 	const int Rank();
+	const double Determinant();
 };
+Matrix Gaussian(Matrix);

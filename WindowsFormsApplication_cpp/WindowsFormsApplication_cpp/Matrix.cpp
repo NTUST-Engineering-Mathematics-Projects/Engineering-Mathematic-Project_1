@@ -1,5 +1,5 @@
 #include "Matrix.h"
-
+int ExChangeTime;
 // Matrix Constructors operation
 Matrix::Matrix()
 {}
@@ -87,21 +87,21 @@ const Matrix & Matrix::Trans()
 	}
 	return trans;
 }
-// Rank of Matrix
-const int Matrix::Rank()
+// Gaussian
+Matrix Gaussian(Matrix GausMatrix)
 {
-	Matrix RankTemp = *this;
-	int result = 0;
-	for (int cur_row = 0, cur_col = 0; cur_row < RankTemp.Data.size() && cur_col < RankTemp.Data[0].size(); cur_row++, cur_col++)
+	ExChangeTime = 0;
+	Matrix GaussTemp = GausMatrix;
+	for (int cur_row = 0, cur_col = 0; cur_row < GaussTemp.Data.size() && cur_col < GaussTemp.Data[0].size(); cur_row++, cur_col++)
 	{
 		// Find currentMax
-		double CMax = abs(RankTemp.Data[cur_row][cur_col]);
+		double CMax = abs(GaussTemp.Data[cur_row][cur_col]);
 		int MRow = cur_row;
-		for (int i = cur_row + 1; i < RankTemp.Data.size(); i++)
+		for (int i = cur_row + 1; i < GaussTemp.Data.size(); i++)
 		{
-			if (abs(RankTemp.Data[i][cur_col]) > CMax)
+			if (abs(GaussTemp.Data[i][cur_col]) > CMax)
 			{
-				CMax = abs(RankTemp.Data[i][cur_col]);
+				CMax = abs(GaussTemp.Data[i][cur_col]);
 				MRow = i;
 			}
 		}
@@ -114,26 +114,36 @@ const int Matrix::Rank()
 		if (MRow != cur_row)
 		{
 			// ExChange Row
-			std::vector<double>ExTemp = RankTemp.Data[cur_row];
-			RankTemp.Data[cur_row] = RankTemp.Data[MRow];
-			RankTemp.Data[MRow] = ExTemp;
+			ExChangeTime++;
+			std::vector<double>ExTemp = GaussTemp.Data[cur_row];
+			GaussTemp.Data[cur_row] = GaussTemp.Data[MRow];
+			GaussTemp.Data[MRow] = ExTemp;
 		}
 		// Clear all nonzero columns
-		for (int i = cur_row + 1; i < RankTemp.Data.size(); i++)
+		for (int i = cur_row + 1; i < GaussTemp.Data.size(); i++)
 		{
-			if (!RankTemp.Data[i][cur_col])
+			if (!GaussTemp.Data[i][cur_col])
 			{
 				continue;
 			}
-			double Mult = (RankTemp.Data[i][cur_col] / RankTemp.Data[cur_row][cur_col]);
-			for (int j = cur_col; j < RankTemp.Data[0].size(); j++)
+			double Mult = (GaussTemp.Data[i][cur_col] / GaussTemp.Data[cur_row][cur_col]);
+			for (int j = cur_col; j < GaussTemp.Data[0].size(); j++)
 			{
-				RankTemp.Data[i][j] -= (Mult * RankTemp.Data[cur_row][j]);
-				if ((RankTemp.Data[i][j] < 1E-6) && (RankTemp.Data[i][j]) > -1E-6)
-					RankTemp.Data[i][j] = 0;
+				GaussTemp.Data[i][j] -= (Mult * GaussTemp.Data[cur_row][j]);
+				if ((GaussTemp.Data[i][j] < 1E-6) && (GaussTemp.Data[i][j]) > -1E-6)
+				{
+					GaussTemp.Data[i][j] = 0;
+				}
 			}
 		}
 	}
+	return GaussTemp;
+}
+// Rank of Matrix
+const int Matrix::Rank()
+{
+	Matrix RankTemp = Gaussian(*this);
+	int result = 0;
 	// Calculate rank
 	for (int i = 0; i < RankTemp.Data.size(); i++)
 	{
@@ -155,4 +165,16 @@ const int Matrix::Rank()
 	}
 	result = RankTemp.column - result;
 	return result;
+}
+// Determinant of Matrix
+const double Matrix::Determinant()
+{
+	double determinant = 1.0;
+	Matrix DetTemp = Gaussian(*this);
+	for (int i = 0; i < DetTemp.row; i++)
+	{
+		determinant *= DetTemp.Data[i][i];
+	}
+	determinant *= pow(-1, ExChangeTime);
+	return determinant;
 }
