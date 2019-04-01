@@ -67,6 +67,7 @@ namespace WindowsFormsApplication_cpp {
 			String^ userInput;
 			int lastInputLength;
 	private: System::Windows::Forms::OpenFileDialog^  openFileDialog1;
+	private: System::Windows::Forms::FlowLayoutPanel^  flowLayoutPanel3;
 			 /// </summary>
 		System::ComponentModel::Container ^components;
 
@@ -90,10 +91,12 @@ namespace WindowsFormsApplication_cpp {
 			this->OutputLabel = (gcnew System::Windows::Forms::Label());
 			this->Output = (gcnew System::Windows::Forms::TextBox());
 			this->openFileDialog1 = (gcnew System::Windows::Forms::OpenFileDialog());
+			this->flowLayoutPanel3 = (gcnew System::Windows::Forms::FlowLayoutPanel());
 			this->menuStrip2->SuspendLayout();
 			this->tableLayoutPanel1->SuspendLayout();
 			this->flowLayoutPanel1->SuspendLayout();
 			this->flowLayoutPanel2->SuspendLayout();
+			this->flowLayoutPanel3->SuspendLayout();
 			this->SuspendLayout();
 			// 
 			// menuStrip2
@@ -103,7 +106,7 @@ namespace WindowsFormsApplication_cpp {
 			this->menuStrip2->Location = System::Drawing::Point(0, 0);
 			this->menuStrip2->Name = L"menuStrip2";
 			this->menuStrip2->Padding = System::Windows::Forms::Padding(14, 4, 0, 4);
-			this->menuStrip2->Size = System::Drawing::Size(1057, 47);
+			this->menuStrip2->Size = System::Drawing::Size(1587, 47);
 			this->menuStrip2->TabIndex = 1;
 			this->menuStrip2->Text = L"menuStrip2";
 			// 
@@ -123,33 +126,30 @@ namespace WindowsFormsApplication_cpp {
 			// 
 			// tableLayoutPanel1
 			// 
-			this->tableLayoutPanel1->ColumnCount = 2;
-			this->tableLayoutPanel1->ColumnStyles->Add((gcnew System::Windows::Forms::ColumnStyle(System::Windows::Forms::SizeType::Percent,
-				50)));
-			this->tableLayoutPanel1->ColumnStyles->Add((gcnew System::Windows::Forms::ColumnStyle(System::Windows::Forms::SizeType::Percent,
-				50)));
-			this->tableLayoutPanel1->Controls->Add(this->flowLayoutPanel1, 1, 0);
-			this->tableLayoutPanel1->Controls->Add(this->flowLayoutPanel2, 0, 0);
-			this->tableLayoutPanel1->Dock = System::Windows::Forms::DockStyle::Fill;
-			this->tableLayoutPanel1->Location = System::Drawing::Point(0, 47);
+			this->tableLayoutPanel1->AutoSizeMode = System::Windows::Forms::AutoSizeMode::GrowAndShrink;
+			this->tableLayoutPanel1->ColumnCount = 1;
+			this->tableLayoutPanel1->ColumnStyles->Add((gcnew System::Windows::Forms::ColumnStyle()));
+			this->tableLayoutPanel1->Controls->Add(this->flowLayoutPanel3, 0, 2);
+			this->tableLayoutPanel1->Controls->Add(this->flowLayoutPanel1, 0, 0);
+			this->tableLayoutPanel1->Controls->Add(this->flowLayoutPanel2, 0, 1);
+			this->tableLayoutPanel1->Location = System::Drawing::Point(69, 73);
 			this->tableLayoutPanel1->Margin = System::Windows::Forms::Padding(7);
 			this->tableLayoutPanel1->Name = L"tableLayoutPanel1";
-			this->tableLayoutPanel1->RowCount = 1;
-			this->tableLayoutPanel1->RowStyles->Add((gcnew System::Windows::Forms::RowStyle(System::Windows::Forms::SizeType::Percent, 100)));
-			this->tableLayoutPanel1->RowStyles->Add((gcnew System::Windows::Forms::RowStyle(System::Windows::Forms::SizeType::Absolute, 45)));
-			this->tableLayoutPanel1->Size = System::Drawing::Size(1057, 809);
+			this->tableLayoutPanel1->RowCount = 3;
+			this->tableLayoutPanel1->RowStyles->Add((gcnew System::Windows::Forms::RowStyle(System::Windows::Forms::SizeType::Percent, 33.33333F)));
+			this->tableLayoutPanel1->RowStyles->Add((gcnew System::Windows::Forms::RowStyle(System::Windows::Forms::SizeType::Percent, 33.33333F)));
+			this->tableLayoutPanel1->RowStyles->Add((gcnew System::Windows::Forms::RowStyle(System::Windows::Forms::SizeType::Percent, 33.33333F)));
+			this->tableLayoutPanel1->Size = System::Drawing::Size(1466, 1086);
 			this->tableLayoutPanel1->TabIndex = 2;
 			// 
 			// flowLayoutPanel1
 			// 
 			this->flowLayoutPanel1->Controls->Add(this->InputLabel);
 			this->flowLayoutPanel1->Controls->Add(this->Input);
-			this->flowLayoutPanel1->Controls->Add(this->VectorLabel);
-			this->flowLayoutPanel1->Controls->Add(this->VectorList);
-			this->flowLayoutPanel1->Location = System::Drawing::Point(535, 7);
+			this->flowLayoutPanel1->Location = System::Drawing::Point(7, 7);
 			this->flowLayoutPanel1->Margin = System::Windows::Forms::Padding(7);
 			this->flowLayoutPanel1->Name = L"flowLayoutPanel1";
-			this->flowLayoutPanel1->Size = System::Drawing::Size(458, 763);
+			this->flowLayoutPanel1->Size = System::Drawing::Size(1459, 347);
 			this->flowLayoutPanel1->TabIndex = 0;
 			// 
 			// InputLabel
@@ -167,11 +167,12 @@ namespace WindowsFormsApplication_cpp {
 			// 
 			// Input
 			// 
+			this->Input->Dock = System::Windows::Forms::DockStyle::Top;
 			this->Input->Location = System::Drawing::Point(7, 42);
 			this->Input->Margin = System::Windows::Forms::Padding(7);
 			this->Input->Multiline = true;
 			this->Input->Name = L"Input";
-			this->Input->Size = System::Drawing::Size(438, 350);
+			this->Input->Size = System::Drawing::Size(1435, 273);
 			this->Input->TabIndex = 1;
 			this->Input->TextChanged += gcnew System::EventHandler(this, &WindowsForm::Input_TextChanged);
 			// 
@@ -181,7 +182,7 @@ namespace WindowsFormsApplication_cpp {
 			this->VectorLabel->AutoSize = true;
 			this->VectorLabel->Font = (gcnew System::Drawing::Font(L"微軟正黑體", 9, static_cast<System::Drawing::FontStyle>((System::Drawing::FontStyle::Bold | System::Drawing::FontStyle::Italic)),
 				System::Drawing::GraphicsUnit::Point, static_cast<System::Byte>(136)));
-			this->VectorLabel->Location = System::Drawing::Point(7, 399);
+			this->VectorLabel->Location = System::Drawing::Point(7, 0);
 			this->VectorLabel->Margin = System::Windows::Forms::Padding(7, 0, 7, 0);
 			this->VectorLabel->Name = L"VectorLabel";
 			this->VectorLabel->Size = System::Drawing::Size(227, 35);
@@ -190,22 +191,23 @@ namespace WindowsFormsApplication_cpp {
 			// 
 			// VectorList
 			// 
+			this->VectorList->Dock = System::Windows::Forms::DockStyle::Top;
 			this->VectorList->FormattingEnabled = true;
 			this->VectorList->ItemHeight = 27;
-			this->VectorList->Location = System::Drawing::Point(7, 441);
+			this->VectorList->Location = System::Drawing::Point(7, 42);
 			this->VectorList->Margin = System::Windows::Forms::Padding(7);
 			this->VectorList->Name = L"VectorList";
-			this->VectorList->Size = System::Drawing::Size(438, 301);
+			this->VectorList->Size = System::Drawing::Size(1382, 274);
 			this->VectorList->TabIndex = 3;
 			// 
 			// flowLayoutPanel2
 			// 
 			this->flowLayoutPanel2->Controls->Add(this->OutputLabel);
 			this->flowLayoutPanel2->Controls->Add(this->Output);
-			this->flowLayoutPanel2->Location = System::Drawing::Point(7, 7);
+			this->flowLayoutPanel2->Location = System::Drawing::Point(7, 368);
 			this->flowLayoutPanel2->Margin = System::Windows::Forms::Padding(7);
 			this->flowLayoutPanel2->Name = L"flowLayoutPanel2";
-			this->flowLayoutPanel2->Size = System::Drawing::Size(434, 747);
+			this->flowLayoutPanel2->Size = System::Drawing::Size(1420, 347);
 			this->flowLayoutPanel2->TabIndex = 1;
 			// 
 			// OutputLabel
@@ -223,6 +225,7 @@ namespace WindowsFormsApplication_cpp {
 			// 
 			// Output
 			// 
+			this->Output->Dock = System::Windows::Forms::DockStyle::Top;
 			this->Output->Font = (gcnew System::Drawing::Font(L"新細明體", 9, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
 				static_cast<System::Byte>(136)));
 			this->Output->Location = System::Drawing::Point(7, 42);
@@ -230,7 +233,8 @@ namespace WindowsFormsApplication_cpp {
 			this->Output->Multiline = true;
 			this->Output->Name = L"Output";
 			this->Output->ReadOnly = true;
-			this->Output->Size = System::Drawing::Size(422, 699);
+			this->Output->ScrollBars = System::Windows::Forms::ScrollBars::Vertical;
+			this->Output->Size = System::Drawing::Size(1435, 287);
 			this->Output->TabIndex = 1;
 			// 
 			// openFileDialog1
@@ -238,11 +242,21 @@ namespace WindowsFormsApplication_cpp {
 			this->openFileDialog1->FileName = L"openFileDialog1";
 			this->openFileDialog1->FileOk += gcnew System::ComponentModel::CancelEventHandler(this, &WindowsForm::openFileDialog1_FileOk);
 			// 
+			// flowLayoutPanel3
+			// 
+			this->flowLayoutPanel3->Controls->Add(this->VectorLabel);
+			this->flowLayoutPanel3->Controls->Add(this->VectorList);
+			this->flowLayoutPanel3->Location = System::Drawing::Point(7, 729);
+			this->flowLayoutPanel3->Margin = System::Windows::Forms::Padding(7);
+			this->flowLayoutPanel3->Name = L"flowLayoutPanel3";
+			this->flowLayoutPanel3->Size = System::Drawing::Size(1459, 334);
+			this->flowLayoutPanel3->TabIndex = 3;
+			// 
 			// WindowsForm
 			// 
 			this->AutoScaleDimensions = System::Drawing::SizeF(14, 27);
 			this->AutoScaleMode = System::Windows::Forms::AutoScaleMode::Font;
-			this->ClientSize = System::Drawing::Size(1057, 856);
+			this->ClientSize = System::Drawing::Size(1587, 1187);
 			this->Controls->Add(this->tableLayoutPanel1);
 			this->Controls->Add(this->menuStrip2);
 			this->Margin = System::Windows::Forms::Padding(7);
@@ -256,6 +270,8 @@ namespace WindowsFormsApplication_cpp {
 			this->flowLayoutPanel1->PerformLayout();
 			this->flowLayoutPanel2->ResumeLayout(false);
 			this->flowLayoutPanel2->PerformLayout();
+			this->flowLayoutPanel3->ResumeLayout(false);
+			this->flowLayoutPanel3->PerformLayout();
 			this->ResumeLayout(false);
 			this->PerformLayout();
 
@@ -282,59 +298,152 @@ private: System::Void Input_TextChanged(System::Object^  sender, System::EventAr
 		//將使用者輸入字串(在userInput中)，依空白作切割
 		array<String^> ^userCommand = userInput->Split(' ');
 		//字串比較，若指令為"print"的情況
-		if (userCommand[0] == "print")
+		try
 		{
-			//定意輸出暫存
-			String^ outputTemp = "";
-			std::string temp;
-			MarshalString(userCommand[1], temp);
-			int Printflag = 0; //找不到的向量或矩陣(0 為沒有此向量或矩陣)
-			if (temp[0] == '$' && temp[1] == 'v')
+			if (userCommand[0] == "print")
 			{
-				//透過for迴圈，從向量資料中找出對應變數
-				for (unsigned int i = 0; i < vectors.size(); i++)
+				//定意輸出暫存
+				String^ outputTemp = "";
+				std::string temp;
+				MarshalString(userCommand[1], temp);
+				int Printflag = 0; //找不到的向量或矩陣(0 為沒有此向量或矩陣)
+				if (temp[0] == '$' && temp[1] == 'v')
 				{
-					//若變數名稱與指令變數名稱符合
-					if (userCommand[1] == gcnew String(vectors[i].Name.c_str()))
+					//透過for迴圈，從向量資料中找出對應變數
+					for (unsigned int i = 0; i < vectors.size(); i++)
 					{
-						Printflag = 1;
-						//將輸出格式存入暫存
-						outputTemp += "[";
-						//將輸出資料存入暫存
-						for (unsigned int j = 0; j < vectors[i].Data.size(); j++)
+						//若變數名稱與指令變數名稱符合
+						if (userCommand[1] == gcnew String(vectors[i].Name.c_str()))
 						{
-							outputTemp += vectors[i].Data[j].ToString();
-							if (j != vectors[i].Data.size() - 1)
-								outputTemp += ",";
+							Printflag = 1;
+							//將輸出格式存入暫存
+							outputTemp += "[";
+							//將輸出資料存入暫存
+							for (unsigned int j = 0; j < vectors[i].Data.size(); j++)
+							{
+								outputTemp += vectors[i].Data[j].ToString();
+								if (j != vectors[i].Data.size() - 1)
+									outputTemp += ",";
+							}
+							//將輸出格式存入暫存，並且換行
+							outputTemp += "]" + Environment::NewLine;
+							//輸出暫存資訊
+							Output->Text += gcnew String(vectors[i].Name.c_str()) + " = " + outputTemp;
+							break;
 						}
-						//將輸出格式存入暫存，並且換行
-						outputTemp += "]" + Environment::NewLine;
-						//輸出暫存資訊
-						Output->Text += gcnew String(vectors[i].Name.c_str()) + " = " + outputTemp;
-						break;
+					}
+					// 錯誤偵測
+					if (!Printflag)
+					{
+						Output->Text += "There is no such vector！" + Environment::NewLine;
+					}
+				}
+				else if (temp[0] == '$' && temp[1] == 'm')
+				{
+					// Print Matrix
+					for (unsigned int i = 0; i < matrixs.size(); i++)
+					{
+						if (userCommand[1] == gcnew String(matrixs[i].Name.c_str()))
+						{
+							Printflag = 1;
+							outputTemp += "[" + Environment::NewLine;
+							for (unsigned int j = 0; j < matrixs[i].Data.size(); j++)
+							{
+								for (unsigned int k = 0; k < matrixs[i].Data[j].size(); k++)
+								{
+									outputTemp += matrixs[i].Data[j][k].ToString();
+									if (k != matrixs[i].Data[j].size() - 1)
+										outputTemp += ",";
+								}
+								outputTemp += Environment::NewLine;
+							}
+							outputTemp += "]" + Environment::NewLine;
+							Output->Text += gcnew String(matrixs[i].Name.c_str()) + " = " + outputTemp;
+							break;
+						}
+					}
+					// 錯誤偵測
+					if (!Printflag)
+					{
+						Output->Text += "There is no such Matrix！" + Environment::NewLine;
 					}
 				}
 				// 錯誤偵測
-				if (!Printflag)
+				else
 				{
-					Output->Text += "There is no such vector！" + Environment::NewLine;
+					Output->Text += "-Command not found-" + Environment::NewLine;
 				}
 			}
-			else if(temp[0] == '$' && temp[1] == 'm')
+			// Clear Output, Input TextBox
+			else if (userCommand[0] == "clear")
 			{
-				// Print Matrix
+				Output->Clear();
+				Input->Clear();
+			}
+			//進行計算
+			else if (userCommand[0] == "cal")
+			{
+				// 格式：A dot B => $v1 * $v2 (dot跟scalar都可以用*)
+				std::vector<std::string>userinput;
+				for (unsigned int i = 1; i < userCommand->Length; i++)
+				{
+					std::string temp;
+					MarshalString(userCommand[i], temp);
+					userinput.push_back(temp);
+				}
+				InfToPos(userinput);
+			}
+			else if (userCommand[0] == "rank")
+			{
 				for (unsigned int i = 0; i < matrixs.size(); i++)
 				{
 					if (userCommand[1] == gcnew String(matrixs[i].Name.c_str()))
 					{
-						Printflag = 1;
-						outputTemp += "[" + Environment::NewLine;
-						for (unsigned int j = 0; j < matrixs[i].Data.size(); j++)
+						Output->Text += "Rank of " + userCommand[1] + " = " + matrixs[i].Rank() + Environment::NewLine;
+						break;
+					}
+				}
+			}
+			else if (userCommand[0] == "det")
+			{
+				for (unsigned int i = 0; i < matrixs.size(); i++)
+				{
+					if (userCommand[1] == gcnew String(matrixs[i].Name.c_str()))
+					{
+						try {
+							if (matrixs[i].Data.size() == matrixs[i].Data[0].size())
+								throw matrixs[i].Determinant();
+							else
+								throw "Error：Row != Column";
+						}
+						catch (double Det)
 						{
-							for (unsigned int k = 0; k < matrixs[i].Data[j].size(); k++)
+							Output->Text += "Determinant of " + userCommand[1] + " = " + Det + Environment::NewLine;
+						}
+						catch (std::string Err)
+						{
+							Output->Text += gcnew String(Err.c_str()) + Environment::NewLine;
+						}
+						break;
+					}
+				}
+			}
+			else if (userCommand[0] == "Inv")
+			{
+				for (unsigned int i = 0; i < matrixs.size(); i++)
+				{
+					if (userCommand[1] == gcnew String(matrixs[i].Name.c_str()))
+					{
+						Matrix IsEqual = Inverse(matrixs[i]);
+						Output->Text += "Inverse：[" + Environment::NewLine;
+						String^ outputTemp = "";
+						// Print Inverse Matrix
+						for (unsigned int j = 0; j < IsEqual.Data.size(); j++)
+						{
+							for (unsigned int k = 0; k < IsEqual.Data[0].size(); k++)
 							{
-								outputTemp += matrixs[i].Data[j][k].ToString();
-								if (k != matrixs[i].Data[j].size() - 1)
+								outputTemp += IsEqual.Data[j][k].ToString();
+								if (k != IsEqual.Data[j].size() - 1)
 									outputTemp += ",";
 							}
 							outputTemp += Environment::NewLine;
@@ -344,62 +453,96 @@ private: System::Void Input_TextChanged(System::Object^  sender, System::EventAr
 						break;
 					}
 				}
-				// 錯誤偵測
-				if (!Printflag)
+			}
+			else if (userCommand[0] == "Adj")
+			{
+				for (unsigned int i = 0; i < matrixs.size(); i++)
 				{
-					Output->Text += "There is no such Matrix！" + Environment::NewLine;
+					if (userCommand[1] == gcnew String(matrixs[i].Name.c_str()))
+					{
+						Matrix IsEqual = Adjoint(matrixs[i]);
+						Output->Text += "Adjoint：[" + Environment::NewLine;
+						String^ outputTemp = "";
+						// Print Adjoint Matrix
+						for (unsigned int j = 0; j < IsEqual.Data.size(); j++)
+						{
+							for (unsigned int k = 0; k < IsEqual.Data[0].size(); k++)
+							{
+								outputTemp += IsEqual.Data[j][k].ToString();
+								if (k != IsEqual.Data[j].size() - 1)
+									outputTemp += ",";
+							}
+							outputTemp += Environment::NewLine;
+						}
+						outputTemp += "]" + Environment::NewLine;
+						Output->Text += gcnew String(matrixs[i].Name.c_str()) + " = " + outputTemp;
+						break;
+					}
 				}
 			}
-			// 錯誤偵測
+			else if (userCommand[0] == "Solve")
+			{
+				Matrix sm1, sm2;
+				for (unsigned int i = 0; i < matrixs.size(); i++)
+				{
+					if (userCommand[1] == gcnew String(matrixs[i].Name.c_str()))
+					{
+						sm1 = matrixs[i];
+						break;
+					}
+				}
+				for (unsigned int i = 0; i < matrixs.size(); i++)
+				{
+
+					if (userCommand[2] == gcnew String(matrixs[i].Name.c_str()))
+					{
+						sm2 = matrixs[i];
+						break;
+					}
+				}
+				sm1 = Solve(sm1, sm2);
+				Output->Text += "Answer：[" + Environment::NewLine;
+				String^ outputTemp = "";
+				// Print Answer Matrix
+				for (unsigned int i = 0; i < sm1.row(); i++)
+				{
+					for (unsigned int j = 0; j < sm1.column(); j++)
+					{
+						outputTemp += sm1.Data[i][j].ToString();
+						if (j != sm1.column() - 1)
+							outputTemp += ",";
+					}
+					outputTemp += Environment::NewLine;
+				}
+				outputTemp += "]" + Environment::NewLine;
+				Output->Text += outputTemp;
+			}
+			//反之則判斷找不到指令
 			else
 			{
 				Output->Text += "-Command not found-" + Environment::NewLine;
 			}
 		}
-		//進行計算
-		else if (userCommand[0] == "cal")
-		{
-			// 格式：A dot B => $v1 * $v2 (dot跟scalar都可以用*)
-			std::vector<std::string>userinput;
-			for (unsigned int i = 1; i < userCommand->Length; i++)
+		// Matrix Error Handle
+		catch(Matrix_Error Err) {
+			switch (Err)
 			{
-				std::string temp;
-				MarshalString(userCommand[i], temp);
-				userinput.push_back(temp);
+			case Matrix_Error::Dimension_Error:
+				Output->Text += "Dimension_Error";
+				break;
+			case Matrix_Error::Row_And_Column_NotEqual:
+				Output->Text += "Row_And_Column_NotEqual";
+			case Matrix_Error::Rank_Not_Equal_To_Row:
+				Output->Text += "Row > Rank！！";
+				break;
+			case Matrix_Error::Determinant_Is_Zero:
+				Output->Text += "Determinant = 0";
+				break;
+			default:
+				Output->Text += "Error";
+				break;
 			}
-			InfToPos(userinput);
-			/*for (unsigned int i = 0; i < userinput.size(); i++)
-			{
-				Output->Text += gcnew String(userinput[i].c_str());
-			}
-			Output->Text += Environment::NewLine;*/
-		}
-		else if (userCommand[0] == "rank")
-		{
-			for (unsigned int i = 0; i < matrixs.size(); i++)
-			{
-				if (userCommand[1] == gcnew String(matrixs[i].Name.c_str()))
-				{
-					Output->Text += "Rank of " + userCommand[1] + " = " + matrixs[i].Rank() + Environment::NewLine;
-					break;
-				}
-			}
-		}
-		else if (userCommand[0] == "det")
-		{
-			for (unsigned int i = 0; i < matrixs.size(); i++)
-			{
-				if (userCommand[1] == gcnew String(matrixs[i].Name.c_str()))
-				{
-					Output->Text += "Determinant of " + userCommand[1] + " = " + matrixs[i].Determinant() + Environment::NewLine;
-					break;
-				}
-			}
-		}
-		//反之則判斷找不到指令
-		else
-		{
-			Output->Text += "-Command not found-" + Environment::NewLine;
+			Output->Text += Environment::NewLine;
 		}
 		userInput = "";
 		

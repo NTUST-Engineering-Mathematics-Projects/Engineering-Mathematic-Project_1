@@ -150,8 +150,6 @@ bool DataManager::LoadMatrixData()
 				//存入矩陣資料
 				tempMatrixData.push_back(bufferVector);
 				tempMatrix.Data = tempMatrixData;
-				tempMatrix.row = Row;
-				tempMatrix.column = Column;
 				//定義矩陣變數名稱，依matrixVariableIndex變數作名稱的控管
 				std::string matrixVariableTemp = "$m" + std::to_string(MatrixVariableIndex);
 				//存入矩陣變數名稱
@@ -182,7 +180,7 @@ bool DataManager::LoadMatrixData()
 			double value;
 			value = (double)strtod(tempSring.c_str(), NULL);
 			//將矩陣資料存入暫存
-			if (currentRow == Row)
+			if (currentRow == Column)
 			{
 				tempMatrixData.push_back(bufferVector);
 				// 已經讀完最後一筆但有空白或換行
@@ -208,8 +206,6 @@ bool DataManager::LoadMatrixData()
 	// 避開換行判斷
 	if(EnterFlag)
 		tempMatrixData.push_back(bufferVector);
-	tempMatrix.row = Row;
-	tempMatrix.column = Column;
 	tempMatrix.Data = tempMatrixData;
 	std::string matrixVariableTemp = "$m" + std::to_string(MatrixVariableIndex);
 	tempMatrix.Name = matrixVariableTemp;
