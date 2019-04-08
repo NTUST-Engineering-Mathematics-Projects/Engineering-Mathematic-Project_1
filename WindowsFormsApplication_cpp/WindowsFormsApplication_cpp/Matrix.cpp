@@ -145,21 +145,20 @@ Matrix Matrix::Gaussian(double tolerance)
 			{
 				continue;
 			}
-			double Mult = (GaussTemp.Data[i][cur_col] / GaussTemp.Data[cur_row][cur_col]);
 			for (int j = cur_col; j < GaussTemp.Data[0].size(); j++)
 			{
-				GaussTemp.Data[i][j] -= (Mult * GaussTemp.Data[cur_row][j]);
-				GaussTemp.Data[i][cur_col] = 0;
+				GaussTemp.Data[i][j] -= (GaussTemp.Data[i][cur_col] / GaussTemp.Data[cur_row][cur_col] * GaussTemp.Data[cur_row][j]);
 			}
+			GaussTemp.Data[i][cur_col] = 0;
 		}
-		// Compare with tolerant
-		for (unsigned int i = 0; i < GaussTemp.row(); i++)
+	}
+	// Compare with tolerant
+	for (unsigned int i = 0; i < GaussTemp.row(); i++)
+	{
+		for (unsigned int j = 0; j < GaussTemp.column(); j++)
 		{
-			for (unsigned int j = 0; j < GaussTemp.column(); j++)
-			{
-				if (abs(GaussTemp.Data[i][j]) < tolerance)
-					GaussTemp.Data[i][j] = 0;
-			}
+			if (abs(GaussTemp.Data[i][j]) < tolerance)
+				GaussTemp.Data[i][j] = 0;
 		}
 	}
 	return GaussTemp;
@@ -167,7 +166,7 @@ Matrix Matrix::Gaussian(double tolerance)
 // Rank of Matrix
 const int Matrix::Rank()
 {
-	Matrix RankTemp = this->Gaussian(1E-8);
+	Matrix RankTemp = this->Gaussian(1E-6);
 	int result = 0;
 	// Calculate rank
 	for (int i = 0; i < RankTemp.Data.size(); i++)
@@ -454,7 +453,7 @@ std::vector<Matrix> Matrix::PM()
 	else
 	{
 		Matrix CurrentM = *this;
-		double tolerant = 1E-15;
+		double tolerant = 1E-10;
 		std::vector<Matrix>Eigen;
 		// EigenTemp[0] = EigenValue, EigenTemp[1] = EigenVector
 		Matrix EigenTemp[2];
@@ -462,16 +461,19 @@ std::vector<Matrix> Matrix::PM()
 		while (CurrentM.row() > 0)
 		{
 			// initial
-			Matrix InitialM;
+			Matrix InitialM, PowerM, Temp;
 			std::vector<double>InitialV;
 			for (unsigned int i = 0; i < CurrentM.row(); i++)
 				InitialV.push_back(1);
 			InitialM.Data.push_back(InitialV);
 			InitialM = InitialM.Trans();
 			// EigenValue
-			double EigenValue, scaling;
+			double EigenValue, scaling, EigenC;
+			EigenValue = 0;
 			scaling = 0;
-			Matrix PowerM, Temp;
+			EigenC = 0;
+			// Jump Out while power has run 2000 times
+			int Jump = 500;
 			while(1)
 			{
 				Temp = InitialM;
@@ -483,31 +485,29 @@ std::vector<Matrix> Matrix::PM()
 				for (unsigned int i = 0; i < CurrentM.row(); i++)
 				{
 					if (abs(InitialM.Data[i][0]) > abs(scaling))
+					{
 						scaling = InitialM.Data[i][0];
+					}
 				}
 				for (unsigned int i = 0; i < CurrentM.row(); i++)
 				{
 					InitialM.Data[i][0] /= scaling;
 				}
-				for (unsigned int i = 0; i < CurrentM.row(); i++)
+				EigenValue = ((CurrentM * InitialM).Trans() * InitialM).Data[0][0] / (InitialM.Trans() * InitialM).Data[0][0];
+				// Jump out or in tolerant
+				if ((abs(EigenValue - EigenC) < (tolerant * 1E+3)) || ((--Jump) == 0))
 				{
-					if (abs(InitialM.Data[i][0] - Temp.Data[i][0]) > tolerant)
-						break;
-					else if (i == CurrentM.row() - 1)
-					{
-						IsEigen = true;
-						break;
-					}
+					IsEigen = true;
 				}
 				if (IsEigen)
 				{
 					// EigenValue
-					EigenValue = ((CurrentM * InitialM).Trans() * InitialM).Data[0][0] / (InitialM.Trans() * InitialM).Data[0][0];
 					ValueTemp.push_back(EigenValue);
 					InitialM = Temp;
 					InitialM = InitialM.Trans();
 					break;
 				}
+				// EigenC = EigenValue;
 			}
 			// Deflation
 			Temp = CurrentM;
@@ -528,8 +528,9 @@ std::vector<Matrix> Matrix::PM()
 			// Solve Ax = 0
 			Matrix CurrentEg = *this;
 			// Answer
-			std::vector<double>EgV(CurrentEg.row());
-			std::vector<double>Zero(CurrentEg.row());
+			std::vector<double>EgV(this->row());
+			// Ax = b, b = 0
+			std::vector<double>Zero(this->row());
 			// Initial
 			for (unsigned int j = 0; j < CurrentEg.row(); j++)
 			{
@@ -537,7 +538,7 @@ std::vector<Matrix> Matrix::PM()
 				Zero[j] = 0;
 			}
 			// Gaussian Tolerant
-			CurrentEg = CurrentEg.Gaussian(1E-5);
+			CurrentEg = CurrentEg.Gaussian(1E-8);
 			// Find nonPivot Column
 			// Record Position
 			std::vector<int>PR;
@@ -579,22 +580,24 @@ std::vector<Matrix> Matrix::PM()
 			}
 			// Get EigenVector
 			// Normalization
-			double NM;
+			double NM = 0;
 			for (unsigned int j = 0; j < EgV.size(); j++)
 			{
-				NM += pow(EgV[j], 2);
+				NM += EgV[j] * EgV[j];
 			}
 			NM = sqrt(NM);
 			for (unsigned int j = 0; j < EgV.size(); j++)
 			{
 				EgV[j] /= NM;
+				if (abs(EgV[j]) < tolerant)
+					EgV[j] = 0;
 			}
 			EigenTemp[1].Data.push_back(EgV);
 		}
 		for (unsigned int i = 0; i < ValueTemp.size(); i++)
 		{
 			std::vector<double>RowTemp;
-			for (unsigned int j = 0; j < CurrentM.row(); j++)
+			for (unsigned int j = 0; j < this->row(); j++)
 			{
 				if (j == i)
 					RowTemp.push_back(ValueTemp[i]);

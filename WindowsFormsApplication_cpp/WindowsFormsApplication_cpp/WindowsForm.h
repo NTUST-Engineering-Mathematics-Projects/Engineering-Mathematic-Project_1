@@ -815,7 +815,7 @@ private: System::Void Input_TextChanged_Matrix(System::Object^  sender, System::
 								outputTemp += Environment::NewLine;
 							}
 						}
-						Output->Text += gcnew String(matrixs[i].Name.c_str()) + " = " + outputTemp;
+						Output->Text += outputTemp;
 						break;
 					}
 				}
