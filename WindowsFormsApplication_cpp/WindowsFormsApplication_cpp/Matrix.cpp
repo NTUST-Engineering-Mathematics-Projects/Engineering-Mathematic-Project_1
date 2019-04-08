@@ -528,7 +528,7 @@ std::vector<Matrix> Matrix::PM()
 			// Solve Ax = 0
 			Matrix CurrentEg = *this;
 			// Answer
-			std::vector<double>X(CurrentEg.row());
+			std::vector<double>EgV(CurrentEg.row());
 			std::vector<double>Zero(CurrentEg.row());
 			// Initial
 			for (unsigned int j = 0; j < CurrentEg.row(); j++)
@@ -536,26 +536,27 @@ std::vector<Matrix> Matrix::PM()
 				CurrentEg.Data[j][j] -= ValueTemp[i];
 				Zero[j] = 0;
 			}
+			// Gaussian Tolerant
 			CurrentEg = CurrentEg.Gaussian(1E-5);
 			// Find nonPivot Column
 			// Record Position
-			std::vector<int>NonP;
+			std::vector<int>PR;
 			for (int cur_row = 0, cur_col = 0; cur_row < CurrentEg.row() && cur_col < CurrentEg.row(); cur_row++, cur_col++)
 			{
 				if (CurrentEg.Data[cur_row][cur_col] == 0)
 				{
 					cur_row--;
-					NonP.push_back(cur_col);
+					PR.push_back(cur_col);
 				}
 			}
 			// Reset ZeroVector
-			for (unsigned int j = 0; j < NonP.size(); j++)
+			for (unsigned int j = 0; j < PR.size(); j++)
 			{
-				X[NonP[j]] = -1;
+				EgV[PR[j]] = -1;
 				for (unsigned int k = 0; k < CurrentEg.row(); k++)
 				{
-					Zero[k] += CurrentEg.Data[k][NonP[j]];
-					CurrentEg.Data[k][NonP[j]] = 0;
+					Zero[k] += CurrentEg.Data[k][PR[j]];
+					CurrentEg.Data[k][PR[j]] = 0;
 				}
 			}
 			// Find EigenVector
@@ -565,11 +566,11 @@ std::vector<Matrix> Matrix::PM()
 				{
 					if (CurrentEg.Data[cur_row][cur_col] != 0)
 					{
-						X[cur_col] = Zero[cur_row] / CurrentEg.Data[cur_row][cur_col];
+						EgV[cur_col] = Zero[cur_row] / CurrentEg.Data[cur_row][cur_col];
 						// Clear all element from this column
 						for (int j = cur_row - 1; j >= 0; j--)
 						{
-							Zero[j] -= X[cur_col] * CurrentEg.Data[j][cur_col];
+							Zero[j] -= CurrentEg.Data[j][cur_col] * EgV[cur_col];
 							CurrentEg.Data[j][cur_col] = 0;
 						}
 						break;
@@ -579,16 +580,16 @@ std::vector<Matrix> Matrix::PM()
 			// Get EigenVector
 			// Normalization
 			double NM;
-			for (unsigned int j = 0; j < X.size(); j++)
+			for (unsigned int j = 0; j < EgV.size(); j++)
 			{
-				NM += X[j] * X[j];
+				NM += pow(EgV[j], 2);
 			}
 			NM = sqrt(NM);
-			for (unsigned int j = 0; j < X.size(); j++)
+			for (unsigned int j = 0; j < EgV.size(); j++)
 			{
-				X[j] /= NM;
+				EgV[j] /= NM;
 			}
-			EigenTemp[1].Data.push_back(X);
+			EigenTemp[1].Data.push_back(EgV);
 		}
 		for (unsigned int i = 0; i < ValueTemp.size(); i++)
 		{
