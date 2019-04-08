@@ -12,7 +12,7 @@ private:
 	std::vector<Vector> Vectors;
 	std::vector<Matrix> Matrixs;
 	//紀錄向量ID，用於控管
-	int  VectorVariableIndex;
+	int VectorVariableIndex;
 	int MatrixVariableIndex;
 	//紀錄檔案路徑名稱
 	std::string FileName;

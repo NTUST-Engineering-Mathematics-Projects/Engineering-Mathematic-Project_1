@@ -51,6 +51,9 @@ DataManager::DataManager()
 
 bool DataManager::LoadVectorData()
 {
+	// Clear Vector
+	Vectors.clear();
+	VectorVariableIndex = 0;
 	//標記當前讀取向量ID
 	int currentLoadVectorID = 0;
 	//Dimension
@@ -119,6 +122,9 @@ bool DataManager::LoadVectorData()
 
 bool DataManager::LoadMatrixData()
 {
+	// Clear Matrixs
+	Matrixs.clear();
+	MatrixVariableIndex = 0;
 	//標記當前讀取矩陣ID
 	int currentLoadMatrixID = 0;
 	//Dimension

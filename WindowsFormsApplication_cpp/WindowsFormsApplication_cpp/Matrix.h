@@ -20,12 +20,15 @@ struct Matrix
 	Matrix operator*(const Matrix&);
 	const int Rank();
 	const double Determinant();
+	Matrix Gaussian(double);
+	Matrix Trans();
+	Matrix Adjoint();
+	Matrix Inverse();
+	Matrix Solve(Matrix);
+	Matrix LeastSquare(Matrix);
+	std::vector<Matrix> Eigen();
+	std::vector<Matrix> PM();
 };
-Matrix Gaussian(Matrix);
-Matrix Trans(Matrix);
-Matrix Adjoint(Matrix);
-Matrix Inverse(Matrix);
-Matrix Solve(Matrix, Matrix);
 
 enum struct Matrix_Error
 {
@@ -34,4 +37,11 @@ enum struct Matrix_Error
 	Determinant_Is_Zero,
 	Rank_Not_Equal_To_Row,
 	Can_Not_Solve,
+	Matrix_Size_Out_of_Range,
+	Has_No_Such_Matrix,
+};
+
+enum struct Vector_Error
+{
+
 };
