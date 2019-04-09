@@ -32,8 +32,12 @@ int Matrix::column()
 	return this->Data[0].size();
 }
 // OperatorOverLoading
-Matrix Matrix::operator+(const Matrix & m)
+Matrix Matrix::operator+(Matrix& m)
 {
+	if (this->IsZeroM())
+		return m;
+	else if (m.IsZeroM())
+		return *this;
 	if (this->Data.size() == m.Data.size() && this->Data[0].size() == m.Data[0].size())
 	{
 		for (unsigned int i = 0; i < this->Data.size(); i++)
@@ -48,8 +52,10 @@ Matrix Matrix::operator+(const Matrix & m)
 	else
 		throw Matrix_Error::Dimension_Error;
 }
-Matrix Matrix::operator-(const Matrix & m)
+Matrix Matrix::operator-(Matrix & m)
 {
+	if (m.IsZeroM())
+		return *this;
 	if (this->Data.size() == m.Data.size() && this->Data[0].size() == m.Data[0].size())
 	{
 		for (unsigned int i = 0; i < this->Data.size(); i++)
@@ -64,8 +70,10 @@ Matrix Matrix::operator-(const Matrix & m)
 	else
 		throw Matrix_Error::Dimension_Error;
 }
-Matrix Matrix::operator*(const Matrix& m)
+Matrix Matrix::operator*(Matrix& m)
 {
+	if (m.IsZeroM() || this->IsZeroM())
+		throw Matrix_Error::Zero_Matrix;
 	if (this->Data[0].size() != m.Data.size())
 		throw Matrix_Error::Dimension_Error;
 	else
@@ -505,7 +513,7 @@ std::vector<Matrix> Matrix::PM()
 				}
 				else if ((--Jump) == 0)
 				{
-					throw Matrix_Error::Can_Not_Solve;
+					throw Matrix_Error::Not_Diagonal;
 				}
 				if (IsEigen)
 				{
@@ -613,5 +621,19 @@ std::vector<Matrix> Matrix::PM()
 		for (unsigned int i = 0; i < 2; i++)
 			Eigen.push_back(EigenTemp[i]);
 		return Eigen;
+	}
+}
+
+bool Matrix::IsZeroM()
+{
+	for (unsigned int i = 0; i < this->row(); i++)
+	{
+		for (unsigned int j = 0; j < this->column(); j++)
+		{
+			if (this->Data[i][j])
+				return false;
+			else if (i == this->row() - 1 && j == this->column() - 1)
+				return true;
+		}
 	}
 }

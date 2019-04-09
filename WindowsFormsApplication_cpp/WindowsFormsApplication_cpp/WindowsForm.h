@@ -851,6 +851,12 @@ private: System::Void Input_TextChanged_Matrix(System::Object^  sender, System::
 			case Matrix_Error::Matrix_Size_Out_of_Range:
 				Output->Text += "Matrix's Row > 3";
 				break;
+			case Matrix_Error::Not_Diagonal:
+				Output->Text += "Matrix nonDiagonalble";
+				break;
+			case Matrix_Error::Zero_Matrix:
+				Output->Text += "Answer is Zero Matrix";
+				break;
 			default:
 				Output->Text += "Matrix Error";
 				break;

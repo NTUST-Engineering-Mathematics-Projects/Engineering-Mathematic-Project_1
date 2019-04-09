@@ -15,9 +15,9 @@ struct Matrix
 	Matrix(double d);
 	Matrix(int i);
 	Matrix(std::string, std::vector<std::vector<double>>);
-	Matrix operator+(const Matrix&);
-	Matrix operator-(const Matrix&);
-	Matrix operator*(const Matrix&);
+	Matrix operator+(Matrix&);
+	Matrix operator-(Matrix&);
+	Matrix operator*(Matrix&);
 	const int Rank();
 	const double Determinant();
 	Matrix Gaussian(double);
@@ -28,6 +28,7 @@ struct Matrix
 	Matrix LeastSquare(Matrix);
 	std::vector<Matrix> Eigen();
 	std::vector<Matrix> PM();
+	bool IsZeroM();
 };
 
 enum struct Matrix_Error
@@ -39,6 +40,8 @@ enum struct Matrix_Error
 	Can_Not_Solve,
 	Matrix_Size_Out_of_Range,
 	Has_No_Such_Matrix,
+	Not_Diagonal,
+	Zero_Matrix,
 };
 
 enum struct Vector_Error
