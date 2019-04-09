@@ -351,7 +351,7 @@ std::vector<Matrix> Matrix::Eigen()
 				for (unsigned int j = 0; j < Eg.row(); j++)
 					Eg.Data[j][j] -= ValueTemp[i];
 				Eg = Eg.Gaussian(1E-8);
-				// a00k1 = -a01k2, k1 = 1, k2 = -a00/a01
+				// a00k1 = -a01k2, k1 = -a01, k2 = a00
 				double k1, k2, NM;
 				k1 = -Eg.Data[0][1];
 				k2 = Eg.Data[0][0];
@@ -623,7 +623,7 @@ std::vector<Matrix> Matrix::PM()
 		return Eigen;
 	}
 }
-
+// Check if it is a zero matrix
 bool Matrix::IsZeroM()
 {
 	for (unsigned int i = 0; i < this->row(); i++)

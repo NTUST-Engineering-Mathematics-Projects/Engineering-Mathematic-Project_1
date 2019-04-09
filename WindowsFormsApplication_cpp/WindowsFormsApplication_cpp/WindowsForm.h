@@ -24,6 +24,8 @@ namespace WindowsFormsApplication_cpp {
 			lastInputLength = -1;
 			// Vector = 0, Matrix = 1, Mode
 			Vector_Or_Matrix = 0;
+			Output->Text += "You can input 'VCommand' or 'MCommand' to see all the instruction！" + Environment::NewLine;
+			Output->Text += "But.... You have to insert file first！" + Environment::NewLine;
 		}
 
 	protected:
@@ -353,6 +355,23 @@ private: System::Void Input_TextChanged_Vector(System::Object^  sender, System::
 					Output->Text += "-Command not found-" + Environment::NewLine;
 				}
 			}
+			else if (userCommand[0] == "VCommand")
+			{
+				String^ outputTemp = "";
+				outputTemp += "print $v0" + Environment::NewLine;
+				outputTemp += "calV $m0 + $m1" + Environment::NewLine;
+				outputTemp += "rank $m0" + Environment::NewLine;
+				outputTemp += "trans $m0" + Environment::NewLine;
+				outputTemp += "det $m0" + Environment::NewLine;
+				outputTemp += "Inv $m0" + Environment::NewLine;
+				outputTemp += "Adj $m0" + Environment::NewLine;
+				outputTemp += "Solve $m0 $m1" + Environment::NewLine;
+				outputTemp += "LeastSquare $m0 $m1" + Environment::NewLine;
+				outputTemp += "Eigen $m0" + Environment::NewLine;
+				outputTemp += "PM $m0" + Environment::NewLine;
+				outputTemp += "clear" + Environment::NewLine;
+				Output->Text += outputTemp;
+			}
 			// Clear Output, Input TextBox
 			else if (userCommand[0] == "clear")
 			{
@@ -469,6 +488,8 @@ private: System::Void Input_TextChanged_Matrix(System::Object^  sender, System::
 		//字串比較，若指令為"print"的情況
 		try
 		{
+			bool HasM1, HasM2;
+			HasM1 = HasM2 = false;
 			if (userCommand[0] == "print")
 			{
 				//定意輸出暫存
@@ -511,6 +532,23 @@ private: System::Void Input_TextChanged_Matrix(System::Object^  sender, System::
 				{
 					Output->Text += "-Command not found-" + Environment::NewLine;
 				}
+			}
+			else if (userCommand[0] == "MCommand")
+			{
+				String^ outputTemp = "";
+				outputTemp += "print $m0" + Environment::NewLine;
+				outputTemp += "calM $m0 + $m1" + Environment::NewLine;
+				outputTemp += "rank $m0" + Environment::NewLine;
+				outputTemp += "trans $m0" + Environment::NewLine;
+				outputTemp += "det $m0" + Environment::NewLine;
+				outputTemp += "Inv $m0" + Environment::NewLine;
+				outputTemp += "Adj $m0" + Environment::NewLine;
+				outputTemp += "Solve $m0 $m1" + Environment::NewLine;
+				outputTemp += "LeastSquare $m0 $m1" + Environment::NewLine;
+				outputTemp += "Eigen $m0" + Environment::NewLine;
+				outputTemp += "PM $m0" + Environment::NewLine;
+				outputTemp += "clear" + Environment::NewLine;
+				Output->Text += outputTemp;
 			}
 			// Clear Output, Input TextBox
 			else if (userCommand[0] == "clear")
@@ -596,10 +634,42 @@ private: System::Void Input_TextChanged_Matrix(System::Object^  sender, System::
 				{
 					if (userCommand[1] == gcnew String(matrixs[i].Name.c_str()))
 					{
+						HasM1 = true;
 						Output->Text += "Rank of " + userCommand[1] + " = " + matrixs[i].Rank() + Environment::NewLine;
 						break;
 					}
 				}
+				if (!HasM1)
+					throw Matrix_Error::Has_No_Such_Matrix;
+			}
+			else if (userCommand[0] == "trans")
+			{
+				for (unsigned int i = 0; i < matrixs.size(); i++)
+				{
+					if (userCommand[1] == gcnew String(matrixs[i].Name.c_str()))
+					{
+						HasM1 = true;
+						Matrix IsEqual = matrixs[i].Trans();
+						Output->Text += "Transpose：[" + Environment::NewLine;
+						String^ outputTemp = "";
+						// Print Transpose Matrix
+						for (unsigned int j = 0; j < IsEqual.Data.size(); j++)
+						{
+							for (unsigned int k = 0; k < IsEqual.Data[0].size(); k++)
+							{
+								outputTemp += IsEqual.Data[j][k].ToString();
+								if (k != IsEqual.Data[j].size() - 1)
+									outputTemp += ",";
+							}
+							outputTemp += Environment::NewLine;
+						}
+						outputTemp += "]" + Environment::NewLine;
+						Output->Text += outputTemp;
+						break;
+					}
+				}
+				if (!HasM1)
+					throw Matrix_Error::Has_No_Such_Matrix;
 			}
 			else if (userCommand[0] == "det")
 			{
@@ -607,23 +677,20 @@ private: System::Void Input_TextChanged_Matrix(System::Object^  sender, System::
 				{
 					if (userCommand[1] == gcnew String(matrixs[i].Name.c_str()))
 					{
-						try {
-							if (matrixs[i].Data.size() == matrixs[i].Data[0].size())
-								throw matrixs[i].Determinant();
-							else
-								throw "Error：Row != Column";
-						}
-						catch (double Det)
+						HasM1 = true;
+						double Det = 0;
+						if (matrixs[i].Data.size() == matrixs[i].Data[0].size())
 						{
+							Det = matrixs[i].Determinant();
 							Output->Text += "Determinant of " + userCommand[1] + " = " + Det + Environment::NewLine;
 						}
-						catch (std::string Err)
-						{
-							Output->Text += gcnew String(Err.c_str()) + Environment::NewLine;
-						}
+						else
+							throw Matrix_Error::Row_And_Column_NotEqual;
 						break;
 					}
 				}
+				if (!HasM1)
+					throw Matrix_Error::Has_No_Such_Matrix;
 			}
 			else if (userCommand[0] == "Inv")
 			{
@@ -631,6 +698,7 @@ private: System::Void Input_TextChanged_Matrix(System::Object^  sender, System::
 				{
 					if (userCommand[1] == gcnew String(matrixs[i].Name.c_str()))
 					{
+						HasM1 = true;
 						Matrix IsEqual = matrixs[i].Inverse();
 						Output->Text += "Inverse：[" + Environment::NewLine;
 						String^ outputTemp = "";
@@ -641,15 +709,17 @@ private: System::Void Input_TextChanged_Matrix(System::Object^  sender, System::
 							{
 								outputTemp += IsEqual.Data[j][k].ToString();
 								if (k != IsEqual.Data[j].size() - 1)
-									outputTemp += ",";
+									outputTemp += ", ";
 							}
 							outputTemp += Environment::NewLine;
 						}
 						outputTemp += "]" + Environment::NewLine;
-						Output->Text += gcnew String(matrixs[i].Name.c_str()) + " = " + outputTemp;
+						Output->Text += outputTemp;
 						break;
 					}
 				}
+				if (!HasM1)
+					throw Matrix_Error::Has_No_Such_Matrix;
 			}
 			else if (userCommand[0] == "Adj")
 			{
@@ -657,6 +727,7 @@ private: System::Void Input_TextChanged_Matrix(System::Object^  sender, System::
 				{
 					if (userCommand[1] == gcnew String(matrixs[i].Name.c_str()))
 					{
+						HasM1 = true;
 						Matrix IsEqual = matrixs[i].Adjoint();
 						Output->Text += "Adjoint：[" + Environment::NewLine;
 						String^ outputTemp = "";
@@ -667,15 +738,17 @@ private: System::Void Input_TextChanged_Matrix(System::Object^  sender, System::
 							{
 								outputTemp += IsEqual.Data[j][k].ToString();
 								if (k != IsEqual.Data[j].size() - 1)
-									outputTemp += ",";
+									outputTemp += ", ";
 							}
 							outputTemp += Environment::NewLine;
 						}
 						outputTemp += "]" + Environment::NewLine;
-						Output->Text += gcnew String(matrixs[i].Name.c_str()) + " = " + outputTemp;
+						Output->Text += outputTemp;
 						break;
 					}
 				}
+				if (!HasM1)
+					throw Matrix_Error::Has_No_Such_Matrix;
 			}
 			else if (userCommand[0] == "Solve")
 			{
@@ -684,6 +757,7 @@ private: System::Void Input_TextChanged_Matrix(System::Object^  sender, System::
 				{
 					if (userCommand[1] == gcnew String(matrixs[i].Name.c_str()))
 					{
+						HasM1 = true;
 						sm1 = matrixs[i];
 						break;
 					}
@@ -693,10 +767,13 @@ private: System::Void Input_TextChanged_Matrix(System::Object^  sender, System::
 
 					if (userCommand[2] == gcnew String(matrixs[i].Name.c_str()))
 					{
+						HasM2 = true;
 						sm2 = matrixs[i];
 						break;
 					}
 				}
+				if ((!HasM1) || (!HasM2))
+					throw Matrix_Error::Has_No_Such_Matrix;
 				sm1 = sm1.Solve(sm2);
 				Output->Text += "Answer：[" + Environment::NewLine;
 				String^ outputTemp = "";
@@ -707,7 +784,7 @@ private: System::Void Input_TextChanged_Matrix(System::Object^  sender, System::
 					{
 						outputTemp += sm1.Data[i][j].ToString();
 						if (j != sm1.column() - 1)
-							outputTemp += ",";
+							outputTemp += ", ";
 					}
 					outputTemp += Environment::NewLine;
 				}
@@ -721,6 +798,7 @@ private: System::Void Input_TextChanged_Matrix(System::Object^  sender, System::
 				{
 					if (userCommand[1] == gcnew String(matrixs[i].Name.c_str()))
 					{
+						HasM1 = true;
 						sm1 = matrixs[i];
 						break;
 					}
@@ -730,10 +808,13 @@ private: System::Void Input_TextChanged_Matrix(System::Object^  sender, System::
 
 					if (userCommand[2] == gcnew String(matrixs[i].Name.c_str()))
 					{
+						HasM2 = true;
 						sm2 = matrixs[i];
 						break;
 					}
 				}
+				if ((!HasM1) || (!HasM2))
+					throw Matrix_Error::Has_No_Such_Matrix;
 				sm1 = sm1.LeastSquare(sm2);
 				Output->Text += "Answer：[" + Environment::NewLine;
 				String^ outputTemp = "";
@@ -744,7 +825,7 @@ private: System::Void Input_TextChanged_Matrix(System::Object^  sender, System::
 					{
 						outputTemp += sm1.Data[i][j].ToString();
 						if (j != sm1.column() - 1)
-							outputTemp += ",";
+							outputTemp += ", ";
 					}
 					outputTemp += Environment::NewLine;
 				}
@@ -757,6 +838,7 @@ private: System::Void Input_TextChanged_Matrix(System::Object^  sender, System::
 				{
 					if (userCommand[1] == gcnew String(matrixs[i].Name.c_str()))
 					{
+						HasM1 = true;
 						std::vector<Matrix>Ans = matrixs[i].Eigen();
 						String^ outputTemp = "";
 						// Print Answer Matrixs
@@ -781,9 +863,11 @@ private: System::Void Input_TextChanged_Matrix(System::Object^  sender, System::
 								outputTemp += Environment::NewLine;
 							}
 						}
-						Output->Text += gcnew String(matrixs[i].Name.c_str()) + " = " + outputTemp;
+						Output->Text += outputTemp;
 						break;
 					}
+					if (!HasM1)
+						throw Matrix_Error::Has_No_Such_Matrix;
 				}
 			}
 			else if (userCommand[0] == "PM")
@@ -792,6 +876,7 @@ private: System::Void Input_TextChanged_Matrix(System::Object^  sender, System::
 				{
 					if (userCommand[1] == gcnew String(matrixs[i].Name.c_str()))
 					{
+						HasM1 = true;
 						std::vector<Matrix>Ans = matrixs[i].PM();
 						String^ outputTemp = "";
 						// Print Answer Matrixs
@@ -819,6 +904,8 @@ private: System::Void Input_TextChanged_Matrix(System::Object^  sender, System::
 						Output->Text += outputTemp;
 						break;
 					}
+					if (!HasM1)
+						throw Matrix_Error::Has_No_Such_Matrix;
 				}
 			}
 			//反之則判斷找不到指令
@@ -846,7 +933,7 @@ private: System::Void Input_TextChanged_Matrix(System::Object^  sender, System::
 				Output->Text += "Row_And_Column_NotEqual, Can_Not_Solve";
 				break;
 			case Matrix_Error::Has_No_Such_Matrix:
-				Output->Text += "There_Is_No_Such_Matrix";
+				Output->Text += "Matrix_Does_Not_Exist！！";
 				break;
 			case Matrix_Error::Matrix_Size_Out_of_Range:
 				Output->Text += "Matrix's Row > 3";
