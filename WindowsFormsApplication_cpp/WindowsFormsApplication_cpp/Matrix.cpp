@@ -23,11 +23,11 @@ Matrix::Matrix(std::string name, std::vector<std::vector<double>> data)
 	Name = name;
 	Data = data;
 }
-const int Matrix::row()
+int Matrix::row()
 {
 	return this->Data.size();
 }
-const int Matrix::column()
+int Matrix::column()
 {
 	return this->Data[0].size();
 }
@@ -70,8 +70,7 @@ Matrix Matrix::operator*(const Matrix& m)
 		throw Matrix_Error::Dimension_Error;
 	else
 	{
-		std::string MatMultiple = "MatMultiple";
-		std::vector<std::vector<double>>RowBuf;
+		Matrix Mul;
 		for (int i = 0; i < this->row(); i++)
 		{
 			std::vector<double>ColBuf;
@@ -84,9 +83,9 @@ Matrix Matrix::operator*(const Matrix& m)
 				}
 				ColBuf.push_back(temp);
 			}
-			RowBuf.push_back(ColBuf);
+			Mul.Data.push_back(ColBuf);
 		}
-		return Matrix(MatMultiple, RowBuf);
+		return Mul;
 	}
 }
 // Matrix Transpose
@@ -111,7 +110,7 @@ Matrix Matrix::Gaussian(double tolerance)
 {
 	ExChangeTime = 0;
 	Matrix GaussTemp = *this;
-	for (int cur_row = 0, cur_col = 0; cur_row < GaussTemp.Data.size() && cur_col < GaussTemp.Data[0].size(); cur_row++, cur_col++)
+	for (unsigned int cur_row = 0, cur_col = 0; cur_row < GaussTemp.row() && cur_col < GaussTemp.column(); cur_row++, cur_col++)
 	{
 		// Find currentMax
 		double CMax = abs(GaussTemp.Data[cur_row][cur_col]);
@@ -134,18 +133,18 @@ Matrix Matrix::Gaussian(double tolerance)
 		{
 			// ExChange Row
 			ExChangeTime++;
-			std::vector<double>ExTemp = GaussTemp.Data[cur_row];
-			GaussTemp.Data[cur_row] = GaussTemp.Data[MRow];
-			GaussTemp.Data[MRow] = ExTemp;
+			std::vector<double> buf = GaussTemp.Data[MRow];
+			GaussTemp.Data[MRow] = GaussTemp.Data[cur_row];
+			GaussTemp.Data[cur_row] = buf;
 		}
 		// Clear all nonzero columns
 		for (int i = cur_row + 1; i < GaussTemp.Data.size(); i++)
 		{
-			if (!GaussTemp.Data[i][cur_col])
+			if (GaussTemp.Data[i][cur_col] == 0)
 			{
 				continue;
 			}
-			for (int j = cur_col; j < GaussTemp.Data[0].size(); j++)
+			for (int j = cur_col + 1; j < GaussTemp.Data[0].size(); j++)
 			{
 				GaussTemp.Data[i][j] -= (GaussTemp.Data[i][cur_col] / GaussTemp.Data[cur_row][cur_col] * GaussTemp.Data[cur_row][j]);
 			}
@@ -453,71 +452,78 @@ std::vector<Matrix> Matrix::PM()
 	else
 	{
 		Matrix CurrentM = *this;
-		double tolerant = 1E-10;
-		std::vector<Matrix>Eigen;
-		// EigenTemp[0] = EigenValue, EigenTemp[1] = EigenVector
 		Matrix EigenTemp[2];
+		double tolerant = 1E-10;
+		// EigenTemp[0] = EigenValue, EigenTemp[1] = EigenVector
 		std::vector<double>ValueTemp;
+		std::vector<Matrix>Eigen;
 		while (CurrentM.row() > 0)
 		{
 			// initial
-			Matrix InitialM, PowerM, Temp;
-			std::vector<double>InitialV;
+			std::vector<double>Origin;
+			std::vector<double>Next;
 			for (unsigned int i = 0; i < CurrentM.row(); i++)
-				InitialV.push_back(1);
-			InitialM.Data.push_back(InitialV);
-			InitialM = InitialM.Trans();
+			{
+				Origin.push_back(1);
+			}
 			// EigenValue
-			double EigenValue, scaling, EigenC;
-			EigenValue = 0;
+			double EigenValue, scaling;
 			scaling = 0;
-			EigenC = 0;
 			// Jump Out while power has run 2000 times
-			int Jump = 500;
+			int Jump = 2000;
+			Next = Origin;
 			while(1)
 			{
-				Temp = InitialM;
 				bool IsEigen = false;
 				// AX(k) = X(k+1)
-				PowerM = CurrentM * InitialM;
-				InitialM = PowerM;
+				for (unsigned int i = 0; i < CurrentM.row(); i++)
+				{
+					Next[i] = 0;
+					for (unsigned int j = 0; j < CurrentM.row(); j++)
+					{
+						Next[i] += CurrentM.Data[i][j] * Origin[j];
+					}
+				}
+				EigenValue = scaling;
+				scaling = 0;
 				// Scaling
 				for (unsigned int i = 0; i < CurrentM.row(); i++)
 				{
-					if (abs(InitialM.Data[i][0]) > abs(scaling))
+					if (abs(Next[i]) > abs(scaling))
 					{
-						scaling = InitialM.Data[i][0];
+						scaling = Next[i];
 					}
 				}
 				for (unsigned int i = 0; i < CurrentM.row(); i++)
 				{
-					InitialM.Data[i][0] /= scaling;
+					Next[i] /= scaling;
 				}
-				EigenValue = ((CurrentM * InitialM).Trans() * InitialM).Data[0][0] / (InitialM.Trans() * InitialM).Data[0][0];
 				// Jump out or in tolerant
-				if ((abs(EigenValue - EigenC) < (tolerant * 1E+3)) || ((--Jump) == 0))
+				if ((abs(EigenValue - scaling) < tolerant))
 				{
 					IsEigen = true;
+				}
+				else if ((--Jump) == 0)
+				{
+					throw Matrix_Error::Can_Not_Solve;
 				}
 				if (IsEigen)
 				{
 					// EigenValue
 					ValueTemp.push_back(EigenValue);
-					InitialM = Temp;
-					InitialM = InitialM.Trans();
 					break;
 				}
-				// EigenC = EigenValue;
+				Origin = Next;
 			}
 			// Deflation
-			Temp = CurrentM;
+			Matrix Temp = CurrentM;
 			CurrentM.Data.clear();
 			for (unsigned int i = 1; i < Temp.row(); i++)
 			{
 				std::vector<double>NewRow;
 				for (unsigned int j = 1; j < Temp.row(); j++)
 				{
-					NewRow.push_back(Temp.Data[i][j] - (InitialM.Data[0][i] / InitialM.Data[0][0]) * Temp.Data[0][j]);
+					NewRow.push_back(Temp.Data[i][j] - ( Origin[i]/ Origin[0]) * Temp.Data[0][j]);
 				}
 				CurrentM.Data.push_back(NewRow);
 			}
@@ -538,7 +544,7 @@ std::vector<Matrix> Matrix::PM()
 				Zero[j] = 0;
 			}
 			// Gaussian Tolerant
-			CurrentEg = CurrentEg.Gaussian(1E-8);
+			CurrentEg = CurrentEg.Gaussian(1E-5);
 			// Find nonPivot Column
 			// Record Position
 			std::vector<int>PR;
@@ -550,7 +556,7 @@ std::vector<Matrix> Matrix::PM()
 					PR.push_back(cur_col);
 				}
 			}
-			// Reset ZeroVector
+			// initial ZeroVector
 			for (unsigned int j = 0; j < PR.size(); j++)
 			{
 				EgV[PR[j]] = -1;
@@ -589,8 +595,6 @@ std::vector<Matrix> Matrix::PM()
 			for (unsigned int j = 0; j < EgV.size(); j++)
 			{
 				EgV[j] /= NM;
-				if (abs(EgV[j]) < tolerant)
-					EgV[j] = 0;
 			}
 			EigenTemp[1].Data.push_back(EgV);
 		}

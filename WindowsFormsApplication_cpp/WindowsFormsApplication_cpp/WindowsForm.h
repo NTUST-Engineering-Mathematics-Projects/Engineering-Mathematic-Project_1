@@ -389,7 +389,7 @@ private: System::Void Input_TextChanged_Vector(System::Object^  sender, System::
 						{
 							if (userinput[i] == vectors[j].Name)
 							{
-								VStack.push_back(vectors[i]);
+								VStack.push_back(vectors[j]);
 								HasVector = true;
 								break;
 							}
@@ -534,7 +534,7 @@ private: System::Void Input_TextChanged_Matrix(System::Object^  sender, System::
 				Matrix CalAns;
 				for (unsigned int i = 0; i < userinput.size(); i++)
 				{
-					int operation = -1;
+					int operation = 0;
 					if (userinput[i] == "+")
 						operation = 1;
 					else if (userinput[i] == "-")
@@ -548,7 +548,7 @@ private: System::Void Input_TextChanged_Matrix(System::Object^  sender, System::
 						{
 							if (userinput[i] == matrixs[j].Name)
 							{
-								MStack.push_back(matrixs[i]);
+								MStack.push_back(matrixs[j]);
 								HasMatrix = true;
 								break;
 							}
@@ -573,8 +573,9 @@ private: System::Void Input_TextChanged_Matrix(System::Object^  sender, System::
 						MStack[MStack.size() - 1] = MStack[MStack.size() - 1] * Ans;
 						break;
 					}
-					CalAns = MStack[MStack.size() - 1];
 				}
+				CalAns = MStack[MStack.size() - 1];
+				MStack.clear();
 				String^ outputTemp = "Answer is¡G[" + Environment::NewLine;
 				for (unsigned int i = 0; i < CalAns.row(); i++)
 				{

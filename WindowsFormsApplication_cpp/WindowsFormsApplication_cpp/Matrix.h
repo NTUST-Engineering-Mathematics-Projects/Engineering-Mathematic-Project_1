@@ -8,8 +8,8 @@ struct Matrix
 	std::string Name;
 	std::vector<std::vector<double>>Data;
 	//¯x°}ºû«×
-	const int row();
-	const int column();
+	int row();
+	int column();
 	// Constructors
 	Matrix();
 	Matrix(double d);
