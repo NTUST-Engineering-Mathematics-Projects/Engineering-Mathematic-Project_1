@@ -43,8 +43,3 @@ enum struct Matrix_Error
 	Not_Diagonal,
 	Zero_Matrix,
 };
-
-enum struct Vector_Error
-{
-
-};

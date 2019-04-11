@@ -311,6 +311,8 @@ private: System::Void Input_TextChanged_Vector(System::Object^  sender, System::
 		//字串比較，若指令為"print"的情況
 		try
 		{
+			bool HasV1, HasV2;
+			HasV1 = HasV2 = false;
 			if (userCommand[0] == "print")
 			{
 				//定意輸出暫存
@@ -360,16 +362,18 @@ private: System::Void Input_TextChanged_Vector(System::Object^  sender, System::
 				String^ outputTemp = "";
 				outputTemp += "print $v0" + Environment::NewLine;
 				outputTemp += "calV $m0 + $m1" + Environment::NewLine;
-				outputTemp += "rank $m0" + Environment::NewLine;
-				outputTemp += "trans $m0" + Environment::NewLine;
-				outputTemp += "det $m0" + Environment::NewLine;
-				outputTemp += "Inv $m0" + Environment::NewLine;
-				outputTemp += "Adj $m0" + Environment::NewLine;
-				outputTemp += "Solve $m0 $m1" + Environment::NewLine;
-				outputTemp += "LeastSquare $m0 $m1" + Environment::NewLine;
-				outputTemp += "Eigen $m0" + Environment::NewLine;
-				outputTemp += "PM $m0" + Environment::NewLine;
-				outputTemp += "clear" + Environment::NewLine;
+				outputTemp += "nor $m0" + Environment::NewLine;
+				outputTemp += "vNorm $m0" + Environment::NewLine;
+				outputTemp += "cro $m0 $m1" + Environment::NewLine;
+				outputTemp += "comp $m0 $m1" + Environment::NewLine;
+				outputTemp += "proj $m0 $m1" + Environment::NewLine;
+				outputTemp += "tri $m0" + Environment::NewLine;
+				outputTemp += "para $m0 $m1" + Environment::NewLine;
+				outputTemp += "orth $m0 $m1" + Environment::NewLine;
+				outputTemp += "angle $m0 $m1" + Environment::NewLine;
+				outputTemp += "plane $m0 $m1" + Environment::NewLine;
+				outputTemp += "linearIdp" + Environment::NewLine;
+				outputTemp += "gramSchmidt" + Environment::NewLine;
 				Output->Text += outputTemp;
 			}
 			// Clear Output, Input TextBox
@@ -444,6 +448,291 @@ private: System::Void Input_TextChanged_Vector(System::Object^  sender, System::
 				}
 				outputTemp += "]" + Environment::NewLine;
 				Output->Text += outputTemp;
+			}
+			else if (userCommand[0] == "nor")
+			{
+				for (unsigned int i = 0; i < vectors.size(); i++)
+				{
+					if (userCommand[1] == gcnew String(vectors[i].Name.c_str()))
+					{
+					HasV1 = true;
+					Output->Text += "Norm of " + userCommand[1] + " = " + vectors[i].norm() + Environment::NewLine;
+					break;
+					}
+				}
+			if (!HasV1)
+				throw Vector_Error::Has_No_Such_Vector;
+			}
+			else if (userCommand[0] == "vNorm")
+			{
+				for (unsigned int i = 0; i < vectors.size(); i++)
+				{
+					if (userCommand[1] == gcnew String(vectors[i].Name.c_str()))
+					{
+						HasV1 = true;
+						Vector tv1 = vectors[i];
+						Vector CalAns = tv1.normalization();
+						String^ outputTemp = "Answer is：[" + Environment::NewLine;
+						for (unsigned int i = 0; i < CalAns.Data.size(); i++)
+						{
+							outputTemp += CalAns.Data[i].ToString();
+							if (i != CalAns.Data.size() - 1)
+								outputTemp += ",";
+
+						}
+						outputTemp += "]" + Environment::NewLine;
+						Output->Text += outputTemp;
+						break;
+					}
+				}
+				if (!HasV1)
+					throw Vector_Error::Has_No_Such_Vector;
+			}
+			else if (userCommand[0] == "cro")
+			{
+				Vector tv1, tv2;
+				for (unsigned int i = 0; i < vectors.size(); i++)
+				{
+					if (userCommand[1] == gcnew String(vectors[i].Name.c_str()))
+					{
+						HasV1 = true;
+						tv1 = vectors[i];
+						break;
+					}
+				}
+				for (unsigned int i = 0; i < vectors.size(); i++)
+				{
+
+					if (userCommand[2] == gcnew String(vectors[i].Name.c_str()))
+					{
+						HasV2 = true;
+						tv2 = vectors[i];
+						break;
+					}
+				}
+				if ((!HasV1) || (!HasV2))
+					throw Vector_Error::Has_No_Such_Vector;
+				Vector CalAns = tv1.crossProduct(tv2);
+				String^ outputTemp = "Answer is：[" + Environment::NewLine;
+				for (unsigned int i = 0; i < CalAns.Data.size(); i++)
+				{
+					outputTemp += CalAns.Data[i].ToString();
+					if (i != CalAns.Data.size() - 1)
+						outputTemp += ",";
+
+				}
+				outputTemp += "]" + Environment::NewLine;
+				Output->Text += outputTemp;
+			}
+			else if (userCommand[0] == "comp")
+			{
+				Vector tv1, tv2;
+				for (unsigned int i = 0; i < vectors.size(); i++)
+				{
+					if (userCommand[1] == gcnew String(vectors[i].Name.c_str()))
+					{
+						HasV1 = true;
+						tv1 = vectors[i];
+						break;
+					}
+				}
+				for (unsigned int i = 0; i < vectors.size(); i++)
+				{
+
+					if (userCommand[2] == gcnew String(vectors[i].Name.c_str()))
+					{
+						HasV2 = true;
+						tv2 = vectors[i];
+						break;
+					}
+				}
+				if ((!HasV1) || (!HasV2))
+					throw Vector_Error::Has_No_Such_Vector;
+				Output->Text += "Component of " + userCommand[1] + " on " + userCommand[2] + " = " + tv1.component(tv2) + Environment::NewLine;
+			}
+			else if (userCommand[0] == "proj")
+			{
+			Vector tv1, tv2;
+			for (unsigned int i = 0; i < vectors.size(); i++)
+			{
+				if (userCommand[1] == gcnew String(vectors[i].Name.c_str()))
+				{
+					HasV1 = true;
+					tv1 = vectors[i];
+					break;
+				}
+			}
+			for (unsigned int i = 0; i < vectors.size(); i++)
+			{
+
+				if (userCommand[2] == gcnew String(vectors[i].Name.c_str()))
+				{
+					HasV2 = true;
+					tv2 = vectors[i];
+					break;
+				}
+			}
+			if ((!HasV1) || (!HasV2))
+				throw Vector_Error::Has_No_Such_Vector;
+			Vector CalAns = tv1.projection(tv2);
+			String^ outputTemp = "Answer is：[" + Environment::NewLine;
+			for (unsigned int i = 0; i < CalAns.Data.size(); i++)
+			{
+				outputTemp += CalAns.Data[i].ToString();
+				if (i != CalAns.Data.size() - 1)
+					outputTemp += ",";
+
+			}
+			outputTemp += "]" + Environment::NewLine;
+			Output->Text += outputTemp;
+			}
+			else if (userCommand[0] == "tri")
+			{
+				Vector tv1, tv2;
+				for (unsigned int i = 0; i < vectors.size(); i++)
+				{
+					if (userCommand[1] == gcnew String(vectors[i].Name.c_str()))
+					{
+						HasV1 = true;
+						tv1 = vectors[i];
+						break;
+					}
+				}
+				for (unsigned int i = 0; i < vectors.size(); i++)
+				{
+
+					if (userCommand[2] == gcnew String(vectors[i].Name.c_str()))
+					{
+						HasV2 = true;
+						tv2 = vectors[i];
+						break;
+					}
+				}
+				if ((!HasV1) || (!HasV2))
+					throw Vector_Error::Has_No_Such_Vector;
+				Output->Text += "Area of a triangle = " + tv1.triangle(tv2) + Environment::NewLine;
+			}
+			else if (userCommand[0] == "para")
+			{
+			Vector tv1, tv2;
+			for (unsigned int i = 0; i < vectors.size(); i++)
+			{
+				if (userCommand[1] == gcnew String(vectors[i].Name.c_str()))
+				{
+					HasV1 = true;
+					tv1 = vectors[i];
+					break;
+				}
+			}
+			for (unsigned int i = 0; i < vectors.size(); i++)
+			{
+
+				if (userCommand[2] == gcnew String(vectors[i].Name.c_str()))
+				{
+					HasV2 = true;
+					tv2 = vectors[i];
+					break;
+				}
+			}
+			if ((!HasV1) || (!HasV2))
+				throw Vector_Error::Has_No_Such_Vector;
+			bool flag = tv1.parallel(tv2);
+			if(flag)
+				Output->Text += "Parallel" + Environment::NewLine;
+			else
+				Output->Text += "Not parallel" + Environment::NewLine;
+			}
+			else if (userCommand[0] == "orth")
+			{
+				Vector tv1, tv2;
+				for (unsigned int i = 0; i < vectors.size(); i++)
+				{
+					if (userCommand[1] == gcnew String(vectors[i].Name.c_str()))
+					{
+						HasV1 = true;
+						tv1 = vectors[i];
+						break;
+					}
+				}
+				for (unsigned int i = 0; i < vectors.size(); i++)
+				{
+
+					if (userCommand[2] == gcnew String(vectors[i].Name.c_str()))
+					{
+						HasV2 = true;
+						tv2 = vectors[i];
+						break;
+					}
+				}
+				if ((!HasV1) || (!HasV2))
+					throw Vector_Error::Has_No_Such_Vector;
+				bool flag = tv1.Orthogonal(tv2);
+				if (flag)
+					Output->Text += "Orthogonal" + Environment::NewLine;
+				else
+					Output->Text += "Not orthogonal" + Environment::NewLine;
+			}
+			else if (userCommand[0] == "angle")
+			{
+				Vector tv1, tv2;
+				for (unsigned int i = 0; i < vectors.size(); i++)
+				{
+					if (userCommand[1] == gcnew String(vectors[i].Name.c_str()))
+					{
+						HasV1 = true;
+						tv1 = vectors[i];
+						break;
+					}
+				}
+				for (unsigned int i = 0; i < vectors.size(); i++)
+				{
+
+					if (userCommand[2] == gcnew String(vectors[i].Name.c_str()))
+					{
+						HasV2 = true;
+						tv2 = vectors[i];
+						break;
+					}
+				}
+				if ((!HasV1) || (!HasV2))
+					throw Vector_Error::Has_No_Such_Vector;
+				Output->Text += "The angle between " + userCommand[1] + " and " + userCommand[2] + " is " + tv1.angle(tv2) + Environment::NewLine;
+			}
+			else if (userCommand[0] == "plane")
+			{
+			Vector tv1, tv2;
+			for (unsigned int i = 0; i < vectors.size(); i++)
+			{
+				if (userCommand[1] == gcnew String(vectors[i].Name.c_str()))
+				{
+					HasV1 = true;
+					tv1 = vectors[i];
+					break;
+				}
+			}
+			for (unsigned int i = 0; i < vectors.size(); i++)
+			{
+
+				if (userCommand[2] == gcnew String(vectors[i].Name.c_str()))
+				{
+					HasV2 = true;
+					tv2 = vectors[i];
+					break;
+				}
+			}
+			if ((!HasV1) || (!HasV2))
+				throw Vector_Error::Has_No_Such_Vector;
+			Vector CalAns = tv1.crossProduct(tv2);
+			String^ outputTemp = "The plane normal is：[" + Environment::NewLine;
+			for (unsigned int i = 0; i < CalAns.Data.size(); i++)
+			{
+				outputTemp += CalAns.Data[i].ToString();
+				if (i != CalAns.Data.size() - 1)
+					outputTemp += ",";
+
+			}
+			outputTemp += "]" + Environment::NewLine;
+			Output->Text += outputTemp;
 			}
 			//反之則判斷找不到指令
 			else
