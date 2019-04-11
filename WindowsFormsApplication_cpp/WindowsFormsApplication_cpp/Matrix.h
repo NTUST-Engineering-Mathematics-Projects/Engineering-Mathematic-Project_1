@@ -42,9 +42,5 @@ enum struct Matrix_Error
 	Has_No_Such_Matrix,
 	Not_Diagonal,
 	Zero_Matrix,
-};
-
-enum struct Vector_Error
-{
-
+	Element_Error,
 };

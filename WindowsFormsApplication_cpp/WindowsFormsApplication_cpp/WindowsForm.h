@@ -1,6 +1,7 @@
 #pragma once
 #include"DotNetUtilities.h"
 #include"InfixToPostfix.h"
+#include <cstdlib>
 
 namespace WindowsFormsApplication_cpp {
 
@@ -311,6 +312,8 @@ private: System::Void Input_TextChanged_Vector(System::Object^  sender, System::
 		//字串比較，若指令為"print"的情況
 		try
 		{
+			bool HasV = false;
+			bool HasV2 = false;
 			if (userCommand[0] == "print")
 			{
 				//定意輸出暫存
@@ -359,16 +362,19 @@ private: System::Void Input_TextChanged_Vector(System::Object^  sender, System::
 			{
 				String^ outputTemp = "";
 				outputTemp += "print $v0" + Environment::NewLine;
-				outputTemp += "calV $m0 + $m1" + Environment::NewLine;
-				outputTemp += "rank $m0" + Environment::NewLine;
-				outputTemp += "trans $m0" + Environment::NewLine;
-				outputTemp += "det $m0" + Environment::NewLine;
-				outputTemp += "Inv $m0" + Environment::NewLine;
-				outputTemp += "Adj $m0" + Environment::NewLine;
-				outputTemp += "Solve $m0 $m1" + Environment::NewLine;
-				outputTemp += "LeastSquare $m0 $m1" + Environment::NewLine;
-				outputTemp += "Eigen $m0" + Environment::NewLine;
-				outputTemp += "PM $m0" + Environment::NewLine;
+				outputTemp += "calV $v0 + $v1" + Environment::NewLine;
+				outputTemp += "Norm $v0" + Environment::NewLine;
+				outputTemp += "Normal $v0" + Environment::NewLine;
+				outputTemp += "Cross $v0 $v1" + Environment::NewLine;
+				outputTemp += "Com $v0 $v1" + Environment::NewLine;
+				outputTemp += "Proj $v0 $v1" + Environment::NewLine;
+				outputTemp += "isP $v0 $v1" + Environment::NewLine;
+				outputTemp += "isO $v0 $v1" + Environment::NewLine;
+				outputTemp += "Angle $v0 $v1" + Environment::NewLine;
+				outputTemp += "Area $v0 $v1" + Environment::NewLine;
+				outputTemp += "pn $v0 $v1" + Environment::NewLine;
+				outputTemp += "isL X(X is a number of vector dimension you choose)" + Environment::NewLine;
+				outputTemp += "ob X(X is a number of vector dimension you choose)" + Environment::NewLine;
 				outputTemp += "clear" + Environment::NewLine;
 				Output->Text += outputTemp;
 			}
@@ -399,7 +405,7 @@ private: System::Void Input_TextChanged_Vector(System::Object^  sender, System::
 						operation = 1;
 					else if (userinput[i] == "-")
 						operation = 2;
-					else if (userinput[i] == "*" || userinput[i] == "dot")
+					else if (userinput[i] == "*")
 						operation = 3;
 					else
 					{
@@ -435,15 +441,358 @@ private: System::Void Input_TextChanged_Vector(System::Object^  sender, System::
 					}
 					CalAns = VStack[VStack.size() - 1];
 				}
-				String^ outputTemp = "Answer is：[" + Environment::NewLine;
+				String^ outputTemp = "Answer is：[";
 				for (unsigned int i = 0; i < CalAns.Data.size(); i++)
 				{
 					outputTemp += CalAns.Data[i].ToString();
 					if (i != CalAns.Data.size() - 1)
 						outputTemp += ",";
 				}
+				outputTemp += "]";
+				Output->Text += outputTemp + Environment::NewLine;
+			}
+			else if (userCommand[0] == "Norm")
+			{
+				for (unsigned int i = 0; i < vectors.size(); i++)
+				{
+					if (userCommand[1] == gcnew String(vectors[i].Name.c_str()))
+					{
+						HasV = true;
+						double N = 0;
+						N = vectors[i].norm();
+						String^ otuputTemp = "Norm = " + N + Environment::NewLine;
+						Output->Text += gcnew String(vectors[i].Name.c_str()) + "=" + otuputTemp;
+						break;
+					}
+				}
+				if (!HasV)
+					throw Vector_Error::Vector_Does_Not_Exist;
+			}
+			else if (userCommand[0] == "Normal")
+			{
+				for (unsigned int i = 0; i < vectors.size(); i++)
+				{
+					if (userCommand[1] == gcnew String(vectors[i].Name.c_str()))
+					{
+						HasV = true;
+						Vector IsEqual = vectors[i].normalization();
+						String^ outputTemp = "[";
+						for (unsigned int j = 0; j < IsEqual.Data.size(); j++)
+						{
+							outputTemp += IsEqual.Data[j].ToString();
+							if (j != IsEqual.Data.size() - 1)
+								outputTemp += ",";
+						}
+						outputTemp += "]" + Environment::NewLine;
+						Output->Text += "Normalization = " + outputTemp;
+					}
+				}
+				if (!HasV)
+					throw Vector_Error::Vector_Does_Not_Exist;
+			}
+			else if (userCommand[0] == "Cross")
+			{
+				if (userCommand->Length != 3)
+					throw Vector_Error::Element_Error;
+				Vector C1, C2;
+				for (unsigned int i = 0; i < vectors.size(); i++)
+				{
+					if (userCommand[1] == gcnew String(vectors[i].Name.c_str()))
+					{
+						HasV = true;
+						C1 = vectors[i];
+						break;
+					}
+				}
+				for (unsigned int i = 0; i < vectors.size(); i++)
+				{
+					if (userCommand[2] == gcnew String(vectors[i].Name.c_str()))
+					{
+						HasV2 = true;
+						C2 = vectors[i];
+						break;
+					}
+				}
+				if (!HasV || !HasV2)
+					throw Vector_Error::Vector_Does_Not_Exist;
+				Vector IsEqual = C1.crossProduct(C2);
+				String^ outputTemp = "[";
+				for (unsigned int j = 0; j < IsEqual.Data.size(); j++)
+				{
+					outputTemp += IsEqual.Data[j].ToString();
+					if (j != IsEqual.Data.size() - 1)
+						outputTemp += ",";
+				}
 				outputTemp += "]" + Environment::NewLine;
-				Output->Text += outputTemp;
+				Output->Text += "CrossProduct = " + outputTemp;
+			}
+			else if (userCommand[0] == "Com")
+			{
+				if (userCommand->Length != 3)
+					throw Vector_Error::Element_Error;
+				Vector C1, C2;
+				for (unsigned int i = 0; i < vectors.size(); i++)
+				{
+					if (userCommand[1] == gcnew String(vectors[i].Name.c_str()))
+					{
+						HasV = true;
+						C1 = vectors[i];
+						break;
+					}
+				}
+				for (unsigned int i = 0; i < vectors.size(); i++)
+				{
+					if (userCommand[2] == gcnew String(vectors[i].Name.c_str()))
+					{
+						HasV2 = true;
+						C2 = vectors[i];
+						break;
+					}
+				}
+				if (!HasV || !HasV2)
+					throw Vector_Error::Vector_Does_Not_Exist;
+				double Com = C1.component(C2);
+				Output->Text += "Component = " + Com + Environment::NewLine;
+			}
+			else if (userCommand[0] == "Proj")
+			{
+				if (userCommand->Length != 3)
+					throw Vector_Error::Element_Error;
+				Vector P1, P2;
+				for (unsigned int i = 0; i < vectors.size(); i++)
+				{
+					if (userCommand[1] == gcnew String(vectors[i].Name.c_str()))
+					{
+						HasV = true;
+						P1 = vectors[i];
+						break;
+					}
+				}
+				for (unsigned int i = 0; i < vectors.size(); i++)
+				{
+					if (userCommand[2] == gcnew String(vectors[i].Name.c_str()))
+					{
+						HasV2 = true;
+						P2 = vectors[i];
+						break;
+					}
+				}
+				if (!HasV || !HasV2)
+					throw Vector_Error::Vector_Does_Not_Exist;
+				Vector IsEqual = P1.projection(P2);
+				String^ outputTemp = "[";
+				for (unsigned int j = 0; j < IsEqual.Data.size(); j++)
+				{
+					outputTemp += IsEqual.Data[j].ToString();
+					if (j != IsEqual.Data.size() - 1)
+						outputTemp += ",";
+				}
+				outputTemp += "]" + Environment::NewLine;
+				Output->Text += "Projection = " + outputTemp;
+			}
+			else if (userCommand[0] == "isP")
+			{
+				if (userCommand->Length != 3)
+					throw Vector_Error::Element_Error;
+				Vector P1, P2;
+				for (unsigned int i = 0; i < vectors.size(); i++)
+				{
+					if (userCommand[1] == gcnew String(vectors[i].Name.c_str()))
+					{
+						HasV = true;
+						P1 = vectors[i];
+						break;
+					}
+				}
+				for (unsigned int i = 0; i < vectors.size(); i++)
+				{
+					if (userCommand[2] == gcnew String(vectors[i].Name.c_str()))
+					{
+						HasV2 = true;
+						P2 = vectors[i];
+						break;
+					}
+				}
+				if (!HasV || !HasV2)
+					throw Vector_Error::Vector_Does_Not_Exist;
+				bool Isp = P1.parallel(P2);
+				if (Isp)
+					Output->Text += "Yes" + Environment::NewLine;
+				else
+					Output->Text += "No" + Environment::NewLine;
+			}
+			else if (userCommand[0] == "isO")
+			{
+				if (userCommand->Length != 3)
+					throw Vector_Error::Element_Error;
+				Vector O1, O2;
+				for (unsigned int i = 0; i < vectors.size(); i++)
+				{
+					if (userCommand[1] == gcnew String(vectors[i].Name.c_str()))
+					{
+						HasV = true;	
+						O1 = vectors[i];
+						break;
+					}
+				}
+				for (unsigned int i = 0; i < vectors.size(); i++)
+				{
+					if (userCommand[2] == gcnew String(vectors[i].Name.c_str()))
+					{
+						HasV2 = true;
+						O2 = vectors[i];
+						break;
+					}
+				}
+				if (!HasV || !HasV2)
+					throw Vector_Error::Vector_Does_Not_Exist;
+				bool IsO = O1.Orthogonal(O2);
+				if (IsO)
+					Output->Text += "Yes" + Environment::NewLine;
+				else
+					Output->Text += "No" + Environment::NewLine;
+			}
+			else if (userCommand[0] == "Angle")
+			{
+				if (userCommand->Length != 3)
+				{
+					throw Vector_Error::Element_Error;
+				}
+				Vector A1, A2;
+				for (unsigned int i = 0; i < vectors.size(); i++)
+				{
+					if (userCommand[1] == gcnew String(vectors[i].Name.c_str()))
+					{
+						HasV = true;
+						A1 = vectors[i];
+						break;
+					}
+				}
+				for (unsigned int i = 0; i < vectors.size(); i++)
+				{
+					if (userCommand[2] == gcnew String(vectors[i].Name.c_str()))
+					{
+						HasV2 = true;
+						A2 = vectors[i];
+						break;
+					}
+				}
+				if (!HasV || !HasV2)
+					throw Vector_Error::Vector_Does_Not_Exist;
+				Output->Text += "theta = " + A1.angle(A2) + Environment::NewLine;
+			}
+			else if (userCommand[0] == "Area")
+			{
+				if (userCommand->Length != 3)
+					throw Vector_Error::Element_Error;
+				Vector A1, A2;
+				for (unsigned int i = 0; i < vectors.size(); i++)
+				{
+					if (userCommand[1] == gcnew String(vectors[i].Name.c_str()))
+					{
+						HasV = true;
+						A1 = vectors[i];
+						break;
+					}
+				}
+				for (unsigned int i = 0; i < vectors.size(); i++)
+				{
+					if (userCommand[2] == gcnew String(vectors[i].Name.c_str()))
+					{
+						HasV2 = true;
+						A2 = vectors[i];
+						break;
+					}
+				}
+				if (!HasV || !HasV2)
+					throw Vector_Error::Vector_Does_Not_Exist;
+				Output->Text += "Area = " + A1.triangle(A2) + Environment::NewLine;
+			}
+			else if (userCommand[0] == "pn")
+			{
+				if (userCommand->Length != 3)
+					throw Vector_Error::Element_Error;
+				Vector p1, p2;
+				for (unsigned int i = 0; i < vectors.size(); i++)
+				{
+					if (userCommand[1] == gcnew String(vectors[i].Name.c_str()))
+					{
+						HasV = true;
+						p1 = vectors[i];
+						break;
+					}
+				}
+				for (unsigned int i = 0; i < vectors.size(); i++)
+				{
+					if (userCommand[2] == gcnew String(vectors[i].Name.c_str()))
+					{
+						HasV2 = true;
+						p2 = vectors[i];
+						break;
+					}
+				}
+				if (!HasV || !HasV2)
+					throw Vector_Error::Vector_Does_Not_Exist;
+				Vector IsEqual = p1.PlaneNormal(p2);
+				String^ outputTemp = "[";
+				for (unsigned int j = 0; j < IsEqual.Data.size(); j++)
+				{
+					outputTemp += IsEqual.Data[j].ToString();
+					if (j != IsEqual.Data.size() - 1)
+						outputTemp += ",";
+				}
+				outputTemp += "]" + Environment::NewLine;
+				Output->Text += "PlaneNormal = " + outputTemp;
+			}
+			else if (userCommand[0] == "isL")
+			{
+				std::string temp;
+				MarshalString(userCommand[1], temp);
+				int dim = std::atoi(temp.c_str());
+				std::vector<Vector>IsL;
+				for (unsigned int i = 0; i < vectors.size(); i++)
+				{
+					if (vectors[i].dimension() == dim)
+					{
+						IsL.push_back(vectors[i]);
+					}
+				}
+				if (IsL.size() == 0)
+					throw Vector_Error::Vector_Does_Not_Exist;
+				bool isL = IsLinearIndependent(IsL);
+				if (isL)
+					Output->Text += "Y" + Environment::NewLine;
+				else
+					Output->Text += "N" + Environment::NewLine;
+			}
+			else if (userCommand[0] == "ob")
+			{
+				String ^ outputTemp = "";
+				std::string temp;
+				MarshalString(userCommand[1], temp);
+				int dim = std::atoi(temp.c_str());
+				std::vector<Vector>op, ans;
+				for (unsigned int i = 0; i < vectors.size(); i++)
+				{
+					if (vectors[i].dimension() == dim)
+					{
+						op.push_back(vectors[i]);
+					}
+				}
+				if (op.size() == 0)
+					throw Vector_Error::Vector_Does_Not_Exist;
+				 ans = OrthogonalBasis(op);
+				 for (unsigned int i = 0; i < ans.size(); i++)
+				 {
+					 for (unsigned int j = 0; j < ans[i].Data.size(); j++)
+					 {
+						 outputTemp += ans[i].Data[j].ToString();
+						 if (j != ans[i].Data.size() - 1)
+							 outputTemp += "  ";
+					 }
+					 outputTemp += Environment::NewLine;
+				 }
+				 Output->Text += "OrthogonalBasis：" + Environment::NewLine + outputTemp;
 			}
 			//反之則判斷找不到指令
 			else
@@ -455,6 +804,21 @@ private: System::Void Input_TextChanged_Vector(System::Object^  sender, System::
 		catch(Vector_Error Err) {
 			switch (Err)
 			{
+			case Vector_Error::Vector_Error:
+				Output->Text += "Vector Error！";
+				break;
+			case Vector_Error::Dimension_Not_Equal:
+				Output->Text += "V1's Dimension is NotEqual to V2's Dimension！";
+				break;
+			case Vector_Error::Vector_Does_Not_Exist:
+				Output->Text += "Vector does not exist！";
+				break;
+			case Vector_Error::Element_Error:
+				Output->Text += "There are some elements you did not enter, input 'VCommand' to see all commands";
+				break;
+			case Vector_Error::One_Or_More_Vector_Are_ZeroVector:
+				Output->Text += "There are one or more vectors zerovector！";
+				break;
 			default:
 				Output->Text += "Vector Error！";
 				break;
@@ -753,6 +1117,8 @@ private: System::Void Input_TextChanged_Matrix(System::Object^  sender, System::
 			else if (userCommand[0] == "Solve")
 			{
 				Matrix sm1, sm2;
+				if (userCommand->Length != 3)
+					throw Matrix_Error::Element_Error;
 				for (unsigned int i = 0; i < matrixs.size(); i++)
 				{
 					if (userCommand[1] == gcnew String(matrixs[i].Name.c_str()))
@@ -793,6 +1159,10 @@ private: System::Void Input_TextChanged_Matrix(System::Object^  sender, System::
 			}
 			else if (userCommand[0] == "LeastSquare")
 			{
+				if (userCommand->Length != 3)
+				{
+					throw Matrix_Error::Element_Error;
+				}
 				Matrix sm1, sm2;
 				for (unsigned int i = 0; i < matrixs.size(); i++)
 				{
@@ -866,9 +1236,9 @@ private: System::Void Input_TextChanged_Matrix(System::Object^  sender, System::
 						Output->Text += outputTemp;
 						break;
 					}
-					if (!HasM1)
-						throw Matrix_Error::Has_No_Such_Matrix;
 				}
+				if (!HasM1)
+					throw Matrix_Error::Has_No_Such_Matrix;
 			}
 			else if (userCommand[0] == "PM")
 			{
@@ -904,9 +1274,9 @@ private: System::Void Input_TextChanged_Matrix(System::Object^  sender, System::
 						Output->Text += outputTemp;
 						break;
 					}
-					if (!HasM1)
-						throw Matrix_Error::Has_No_Such_Matrix;
 				}
+				if (!HasM1)
+					throw Matrix_Error::Has_No_Such_Matrix;
 			}
 			//反之則判斷找不到指令
 			else
@@ -943,6 +1313,9 @@ private: System::Void Input_TextChanged_Matrix(System::Object^  sender, System::
 				break;
 			case Matrix_Error::Zero_Matrix:
 				Output->Text += "Answer is Zero Matrix";
+				break;
+			case Matrix_Error::Element_Error:
+				Output->Text += "There are some elements you did not enter, input 'MCommand' to see all commands";
 				break;
 			default:
 				Output->Text += "Matrix Error";

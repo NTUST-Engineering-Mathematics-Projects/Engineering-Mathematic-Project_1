@@ -152,9 +152,10 @@ Matrix Matrix::Gaussian(double tolerance)
 			{
 				continue;
 			}
+			double sub = GaussTemp.Data[i][cur_col] / GaussTemp.Data[cur_row][cur_col];
 			for (int j = cur_col + 1; j < GaussTemp.Data[0].size(); j++)
 			{
-				GaussTemp.Data[i][j] -= (GaussTemp.Data[i][cur_col] / GaussTemp.Data[cur_row][cur_col] * GaussTemp.Data[cur_row][j]);
+				GaussTemp.Data[i][j] -= (sub * GaussTemp.Data[cur_row][j]);
 			}
 			GaussTemp.Data[i][cur_col] = 0;
 		}
@@ -305,6 +306,7 @@ std::vector<Matrix> Matrix::Eigen()
 	else
 	{
 		std::vector<Matrix>Eigen;
+		double tolerant = 1E-10;
 		// ET[0] = EigenValue ET[1] = EigenVector
 		Matrix EigenTemp[2];
 		std::vector<double>ValueTemp;
@@ -366,6 +368,12 @@ std::vector<Matrix> Matrix::Eigen()
 					Temp.push_back(k1);
 					Temp.push_back(k2);
 				}
+				// EigenVectot = {1, 0}
+				else if (k1 == 0 && k2 != 0)
+				{
+					Temp.push_back(1);
+					Temp.push_back(0);
+				}
 				// EigenVector
 				EigenTemp[1].Data.push_back(Temp);
 			}
@@ -381,9 +389,16 @@ std::vector<Matrix> Matrix::Eigen()
 			Q = (pow(b, 2) - 3 * c) / 9;
 			R = (2 * pow(b, 3) - 9 * b * c + 27 * d) / 54;
 			thta = acos((R / sqrt(pow(Q, 3))));
+			// x1, x2, x3 Compare with tolerant
 			x1 = -2 * sqrt(Q) * cos(thta / 3) - b / 3;
+			if (abs(x1) < tolerant)
+				x1 = 0;
 			x2 = -2 * sqrt(Q) * cos((thta + 2 * M_PI) / 3) - b / 3;
+			if (abs(x2) < tolerant)
+				x2 = 0;
 			x3 = -2 * sqrt(Q) * cos((thta - 2 * M_PI) / 3) - b / 3;
+			if (abs(x3) < tolerant)
+				x3 = 0;
 			// EigenValue
 			ValueTemp.push_back(x1);
 			if(x1 != x2)
@@ -511,10 +526,11 @@ std::vector<Matrix> Matrix::PM()
 				{
 					IsEigen = true;
 				}
-				else if ((--Jump) == 0)
+				else if ((Jump - 1) == 0)
 				{
 					throw Matrix_Error::Not_Diagonal;
 				}
+				Jump--;
 				if (IsEigen)
 				{
 					// EigenValue

@@ -30,12 +30,12 @@ bool DataManager::ReadFileName()
 				break;
 			}
 		}
-		if (RealFileName[0] == 'V')
+		if (RealFileName[0] == 'V' || RealFileName[0] == 'v')
 		{
 			VM = 0;
 			return this->LoadVectorData();
 		}
-		else
+		else if(RealFileName[0] == 'M' || RealFileName[0] == 'm')
 		{
 			VM = 1;
 			return this->LoadMatrixData();
@@ -56,14 +56,17 @@ bool DataManager::LoadVectorData()
 	VectorVariableIndex = 0;
 	//標記當前讀取向量ID
 	int currentLoadVectorID = 0;
-	//Dimension
-	int dimension;
+	// Dimension
+	int dimension = 0;
+	// All vectors count
+	int vcount = 0;
 	//定義向量資料暫存變數
 	std::vector<double> tempVectorData;
 	//定義讀取檔案字串暫存變數
 	std::string tempSring;
 	//從檔案讀取字串，解析掉向量總數
 	fin >> tempSring;
+	vcount = (int)strtod(tempSring.c_str(), NULL);
 		
 	//執行讀檔迴圈，並在讀到檔案結尾時結束
 	while (!fin.eof())
@@ -79,7 +82,6 @@ bool DataManager::LoadVectorData()
 				Vector tempVector;
 				//存入向量資料
 				tempVector.Data = tempVectorData;
-				tempVector.dimension = dimension;
 				//定義向量變數名稱，依VectorVariableIndex變數作名稱的控管
 				std::string vectorVariableTemp = "$v" + std::to_string(VectorVariableIndex);
 				//存入向量變數名稱
@@ -90,6 +92,8 @@ bool DataManager::LoadVectorData()
 				VectorVariableIndex++;
 				//清除向量資料暫存
 				tempVectorData.clear();
+				// Vector count - 1
+				vcount--;
 			}
 			//遞增currentLoadVectorID，標記到當前讀取向量ID
 			currentLoadVectorID++;
@@ -104,12 +108,15 @@ bool DataManager::LoadVectorData()
 			value = (double)strtod(tempSring.c_str(), NULL);
 			//將向量資料存入暫存
 			tempVectorData.push_back(value);
+			if (tempVectorData.size() == dimension && (vcount - 1 == 0))
+			{
+				break;
+			}
 		}
 			
 	}
 	//讀入輸入檔案中最後一個向量資訊
 	Vector tempVector;
-	tempVector.dimension = dimension;
 	tempVector.Data = tempVectorData;
 	std::string vectorVariableTemp = "$v" + std::to_string(VectorVariableIndex);
 	tempVector.Name = vectorVariableTemp;
