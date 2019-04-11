@@ -1,12 +1,6 @@
 #include "Vector.h"
-<<<<<<< HEAD
 #define _USE_MATH_DEFINES
 #include <math.h>
-=======
-#include <cmath>
-
-#define PI 3.14159265
->>>>>>> 060fbe893691f3477add16eea019b91e64dc5fa3
 
 int Vector::dimension()
 {
@@ -33,11 +27,7 @@ Vector::Vector(std::string name, std::vector<double> data)
 	Data = data;
 }
 // Vector OperatorOverLoading
-<<<<<<< HEAD
 Vector Vector::operator+(Vector & v)
-=======
-const Vector Vector::operator+(const Vector & v)
->>>>>>> 060fbe893691f3477add16eea019b91e64dc5fa3
 {
 	if (this->dimension() != v.dimension())
 		throw Vector_Error::Dimension_Not_Equal;
@@ -59,11 +49,7 @@ const Vector Vector::operator+(const Vector & v)
 	}
 	return result;
 }
-<<<<<<< HEAD
 Vector Vector::operator-(Vector& v)
-=======
-const Vector Vector::operator-(const Vector& v)
->>>>>>> 060fbe893691f3477add16eea019b91e64dc5fa3
 {
 	if (this->dimension() != v.dimension())
 		throw Vector_Error::Dimension_Not_Equal;
@@ -81,11 +67,7 @@ const Vector Vector::operator-(const Vector& v)
 	return result;
 }
 // Dot of Vector
-<<<<<<< HEAD
 Vector Vector::operator*(Vector & v)
-=======
-const Vector Vector::operator*(const Vector & v) const
->>>>>>> 060fbe893691f3477add16eea019b91e64dc5fa3
 {
 	Vector result;
 	// Multiplication of Vector(Scalar)
@@ -125,7 +107,7 @@ const Vector Vector::operator*(const Vector & v) const
 	return result;
 }
 // Norm of Vector
-const double Vector::norm() const
+const double Vector::norm()
 {
 	double Norm = 0;
 	for (unsigned int i = 0; i < this->Data.size(); i++)
@@ -136,11 +118,7 @@ const double Vector::norm() const
 	return Norm;
 }
 // Normalization of Vector
-<<<<<<< HEAD
 Vector Vector::normalization()
-=======
-const Vector Vector::normalization()
->>>>>>> 060fbe893691f3477add16eea019b91e64dc5fa3
 {
 	Vector result;
 	result.Data.clear();
@@ -170,7 +148,6 @@ const bool Vector::Orthogonal(Vector & v)
 	if (this->IsZeroVector() || v.IsZeroVector())
 		return true;
 	Vector temp = *this * v;
-<<<<<<< HEAD
 	return (temp.Data[0] == 0) ? true : false;
 }
 // Judge if it is a zervector
@@ -188,48 +165,28 @@ Vector Vector::crossProduct(Vector& v)
 {
 	if (this->dimension() != 3 || v.dimension() != 3)
 		throw Vector_Error::Dimension_Not_Equal;
-=======
-	return (temp.Data[0] == 0.0) ? true : false;
-}
-// Cross product operating, The plane normal that is produced by two vectors
-const Vector Vector::crossProduct(const Vector& v)
-{
->>>>>>> 060fbe893691f3477add16eea019b91e64dc5fa3
 	Vector answer;
 	double i, j, k;
 	i = this->Data[1] * v.Data[2] - this->Data[2] * v.Data[1];
 	answer.Data.push_back(i);
-<<<<<<< HEAD
 	j = -(this->Data[0] * v.Data[2] - this->Data[2] * v.Data[0]);
-=======
-	j = this->Data[0] * v.Data[2] - this->Data[2] * v.Data[0];
->>>>>>> 060fbe893691f3477add16eea019b91e64dc5fa3
 	answer.Data.push_back(j);
 	k = this->Data[0] * v.Data[1] - this->Data[1] * v.Data[0];
 	answer.Data.push_back(k);
 	return answer;
 }
 //Component of a on b
-<<<<<<< HEAD
 const double Vector::component(Vector& v)
-=======
-const double Vector::component(const Vector& v)
->>>>>>> 060fbe893691f3477add16eea019b91e64dc5fa3
 {
 	return (*this * v).Data[0] / v.norm();
 }
 //Projection of a on b
-<<<<<<< HEAD
 Vector Vector::projection(Vector& v)
-=======
-const Vector Vector::projection(const Vector& v)
->>>>>>> 060fbe893691f3477add16eea019b91e64dc5fa3
 {
 	double d1, d2;
 	d1 = (*this * v).Data[0];
 	d2 = (v * v).Data[0];
 	Vector tv = Vector(d1 / d2);
-<<<<<<< HEAD
 	return (tv * v);
 }
 //The angle between two vectors
@@ -348,27 +305,10 @@ const bool IsLinearIndependent(std::vector<Vector> v)
 		Det *= Matrix[i][i];
 	}
 	if (Det)
-=======
-	return tv * v;
-}
-//Triangle area
-const double Vector::triangle(const Vector& v)
-{
-	double nor = (this->crossProduct(v)).norm();
-	return 0.5 * nor;
-}
-//Parallel judgement
-const bool Vector::parallel(const Vector& v)
-{
-	double dot = (*this * v).Data[0];
-	dot = abs(dot);
-	if ((dot / v.norm() - this->norm()) < 0.001)
->>>>>>> 060fbe893691f3477add16eea019b91e64dc5fa3
 		return true;
 	else
 		return false;
 }
-<<<<<<< HEAD
 // Vector OrthogonalBasis
 std::vector<Vector> OrthogonalBasis(std::vector<Vector> v)
 {
@@ -400,12 +340,5 @@ std::vector<Vector> OrthogonalBasis(std::vector<Vector> v)
 			result[i].Data[j] /= nor;
 		}
 	}
-=======
-//The angle between two vectors
-const double Vector::angle(const Vector& v)
-{
-	double theta = (*this * v).Data[0] / this->norm() / v.norm();
-	double result = acos(theta) * 180.0 / PI;
->>>>>>> 060fbe893691f3477add16eea019b91e64dc5fa3
 	return result;
 }

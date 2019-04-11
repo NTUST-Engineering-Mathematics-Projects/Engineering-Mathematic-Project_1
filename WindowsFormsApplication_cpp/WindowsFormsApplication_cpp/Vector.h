@@ -16,21 +16,13 @@ struct Vector
 	Vector::Vector(std::string);
 	Vector::Vector(std::string, std::vector<double>);
 	//OperatorOverLoading
-<<<<<<< HEAD
 	Vector operator+(Vector&);
 	Vector operator-(Vector&);
 	// Dot of Vector and Multiplication of Vector
 	Vector operator*(Vector&);
-=======
-	const Vector operator+(const Vector& v);
-	const Vector operator-(const Vector& v);
-	// Dot of Vector and Multiplication of Vector
-	const Vector operator*(const Vector& v) const;
->>>>>>> 060fbe893691f3477add16eea019b91e64dc5fa3
 	// Norm of Vector
-	const double norm() const;
+	const double norm();
 	// Normalization of Vector
-<<<<<<< HEAD
 	Vector normalization();
 	// Orthogonal judgement
 	const bool Orthogonal(Vector&);
@@ -54,26 +46,4 @@ enum struct Vector_Error
 	Vector_Does_Not_Exist,
 	Element_Error,
 	One_Or_More_Vector_Are_ZeroVector,
-=======
-	const Vector normalization();
-	// Orthogonal judgement
-	const bool Orthogonal(const Vector& v);
-	// Cross product operating, The plane normal that is produced by two vectors
-	const Vector crossProduct(const Vector& v);
-	//Component of a on b
-	const double component(const Vector& v);
-	//Projection of a on b
-	const Vector projection(const Vector& v);
-	//Triangle area
-	const double triangle(const Vector& v);
-	//Parallel judgement
-	const bool parallel(const Vector& v);
-	//The angle between two vectors
-	const double angle(const Vector& v);
-};
-
-enum struct Vector_Error
-{
-	Has_No_Such_Vector
->>>>>>> 060fbe893691f3477add16eea019b91e64dc5fa3
 };
