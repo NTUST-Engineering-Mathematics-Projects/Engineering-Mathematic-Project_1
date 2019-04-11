@@ -367,7 +367,7 @@ private: System::Void Input_TextChanged_Vector(System::Object^  sender, System::
 				outputTemp += "cro $m0 $m1" + Environment::NewLine;
 				outputTemp += "comp $m0 $m1" + Environment::NewLine;
 				outputTemp += "proj $m0 $m1" + Environment::NewLine;
-				outputTemp += "tri $m0" + Environment::NewLine;
+				outputTemp += "tri $m0 m1" + Environment::NewLine;
 				outputTemp += "para $m0 $m1" + Environment::NewLine;
 				outputTemp += "orth $m0 $m1" + Environment::NewLine;
 				outputTemp += "angle $m0 $m1" + Environment::NewLine;
