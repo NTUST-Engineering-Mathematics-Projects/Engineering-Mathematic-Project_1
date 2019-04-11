@@ -42,5 +42,8 @@ enum struct Matrix_Error
 	Has_No_Such_Matrix,
 	Not_Diagonal,
 	Zero_Matrix,
+<<<<<<< HEAD
 	Element_Error,
+=======
+>>>>>>> 060fbe893691f3477add16eea019b91e64dc5fa3
 };
