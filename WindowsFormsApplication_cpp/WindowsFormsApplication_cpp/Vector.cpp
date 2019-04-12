@@ -227,6 +227,7 @@ Vector Vector::PlaneNormal(Vector & v)
 // Linear independent judgement
 const bool IsLinearIndependent(std::vector<Vector> v)
 {
+	int ExChange = 0;
 	for (unsigned int i = 0; i < v.size(); i++)
 	{
 		if (i != v.size() - 1)
@@ -272,6 +273,7 @@ const bool IsLinearIndependent(std::vector<Vector> v)
 		if (MRow != cur_row)
 		{
 			//ExChange Row
+			ExChange++;
 			std::vector<double>buf = Matrix[cur_row];
 			Matrix[cur_row] = Matrix[MRow];
 			Matrix[MRow] = buf;
@@ -304,6 +306,7 @@ const bool IsLinearIndependent(std::vector<Vector> v)
 	{
 		Det *= Matrix[i][i];
 	}
+	Det *= pow(ExChange, -1);
 	if (Det)
 		return true;
 	else

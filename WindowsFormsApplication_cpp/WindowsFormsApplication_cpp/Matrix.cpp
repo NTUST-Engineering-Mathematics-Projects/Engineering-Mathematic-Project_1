@@ -552,6 +552,23 @@ std::vector<Matrix> Matrix::PM()
 				CurrentM.Data.push_back(NewRow);
 			}
 		}
+		// EigenValue sort
+		std::vector<double>BUF;
+		for (unsigned int i = 0; i < ValueTemp.size(); i++)
+		{
+			double temp = ValueTemp[i];
+			for (unsigned int j = i + 1; j < ValueTemp.size(); j++)
+			{
+				if (abs(temp) < abs(ValueTemp[j]))
+				{
+					double temp2 = temp;
+					temp = ValueTemp[j];
+					ValueTemp[j] = temp2;
+				}
+			}
+			BUF.push_back(temp);
+		}
+		ValueTemp = BUF;
 		// EigenVector
 		for (unsigned int i = 0; i < ValueTemp.size(); i++)
 		{

@@ -462,7 +462,7 @@ private: System::Void Input_TextChanged_Vector(System::Object^  sender, System::
 						double N = 0;
 						N = vectors[i].norm();
 						String^ otuputTemp = "Norm = " + N + Environment::NewLine;
-						Output->Text += gcnew String(vectors[i].Name.c_str()) + "=" + otuputTemp;
+						Output->Text += otuputTemp;
 						break;
 					}
 				}
